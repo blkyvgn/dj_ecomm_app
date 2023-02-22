@@ -14,16 +14,16 @@ class BaseQuerySet(models.QuerySet):
 	def valid(self, valid=True):
 		return self.filter(is_valid=valid)
 
-	def shop(self, id):
-		return self.filter(shop_id=id)
+	def company(self, cmp_id=None):
+		return self.filter(company_id=cmp_id)
 
-	def filter_by_params(self, keys_params={}, _or=False):
-		if keys_params:
+	def filter_by_params(self, _or=False, **kwargs):
+		if kwargs:
 			_q = Q()
 			conn = Q.AND if not _or else Q.OR
-			for key, val in keys_params.items():
-				search_dict = {key: value}
-				_q.add(Q(**search_dict), conn)
+			for key, val in kwargs.items():
+				filter_dict = {key: val}
+				_q.add(Q(**filter_dict), conn)
 			return self.filter(_q)
 		else:
 			return self
@@ -39,11 +39,11 @@ class BaseManager(models.Manager):
 	def valid(self, valid=True):
 		return self.get_queryset().valid(valid)
 
-	def shop(self, id):
-		return self.get_queryset().shop(id)
+	def company(self, cmp_id=None):
+		return self.get_queryset().company(cmp_id)
 
-	def filter_by_params(self, keys_params={}, _or=False):
-		return self.get_queryset().filter_by_params(keys_params, _or)
+	def filter_by_params(self, _or=False, **kwargs):
+		return self.get_queryset().filter_by_params(_or, **kwargs)
 
 	def by_raw(self, query_str, params):
 		return self.get_queryset().by_raw(query_str, params)
@@ -60,6 +60,14 @@ class BaseModel(models.Model):
 	class Meta:
 		abstract = True
 
+	@classmethod
+	def get_first_by_filters(cls, _or=False, **kwargs):
+		return cls.objs.filter_by_params(_or, **kwargs).first()
+
+
+class EmptyBaseModel(models.Model):
+	class Meta:
+		abstract = True
 
 class AdminBaseModel(admin.ModelAdmin):
     empty_value_display = settings.EMPTY_VALUE

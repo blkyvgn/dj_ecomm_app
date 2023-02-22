@@ -2,10 +2,13 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ecomm.vendors.base.model import BaseModel
 from django.contrib.auth import get_user_model
+from ecomm.vendors.mixins.model import (
+	TimestampsMixin,
+)
 Account = get_user_model()
 
 
-class Address(BaseModel):
+class Address(BaseModel, TimestampsMixin):
 	line = models.CharField(
 		max_length=255,
 	)
@@ -37,3 +40,4 @@ class Address(BaseModel):
 	class Meta:
 		verbose_name = _('Address')
 		verbose_name_plural = _('Addresses')
+		ordering = ('-created_at',)

@@ -1,15 +1,19 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from ecomm.vendors.base.model import EmptyBaseModel
+from ecomm.vendors.mixins.model import (
+	ImgMixin,
+)
 Account = get_user_model()
 
 def profile_photo_upload_to(instance, filename):
 	return f'account/{instance.id}/photo/{filename}'
 
-class Profile(models.Model):
+class Profile(EmptyBaseModel, ImgMixin):
 	class Sex(models.TextChoices):
-		MALE      = 'MALE', _('Male')
-		FEMALE    = 'FEMALE', _('Female')
+		MALE    = 'MALE', _('Male')
+		FEMALE  = 'FEMALE', _('Female')
 
 	first_name = models.CharField(
 		max_length=20, 
@@ -25,20 +29,20 @@ class Profile(models.Model):
 	photo = models.ImageField(
 		upload_to=profile_photo_upload_to, 
 		null=True, 
-		blank=True
+		blank=True,
 	)
 	phone = models.CharField(
 		max_length=25, 
 		null=True, 
-		blank=True
+		blank=True,
 	)
 	age = models.IntegerField(
 		null=True, 
-		blank=True
+		blank=True,
 	)
 	birthdate = models.DateField(
 		null=True, 
-		blank=True
+		blank=True,
 	)
 	sex = models.CharField(
 		max_length=8, 
@@ -47,8 +51,11 @@ class Profile(models.Model):
 	)
 	account = models.OneToOneField(
 		Account, 
-		on_delete=models.CASCADE
+		on_delete=models.CASCADE,
 	)
+
+	def __str__(self):
+		return self.full_name
 
 	@property
 	def full_name(self):

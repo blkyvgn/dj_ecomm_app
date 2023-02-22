@@ -38,7 +38,7 @@ class AccountManager(BaseUserManager):
 
 class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, SoftdeleteMixin):
 	class Type(models.TextChoices):
-		ADMIN    = 'ADMIN', _('Admin')
+		ADMIN    = 'ADMIN',    _('Admin')
 		EMPLOYEE = 'EMPLOYEE', _('Employee')
 		CUSTOMER = 'CUSTOMER', _('Customer')
 
@@ -67,6 +67,7 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 	class Meta:
 		verbose_name =  _('Account')
 		verbose_name_plural =  _('Accounts')
+		ordering = ('-created_at',)
 		permissions = [
 			('view_dashboard', 'View page: Dashboard'),
 			('change_password', 'Change account password'),
@@ -76,6 +77,9 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 			models.Index(fields=['email',]),
 		]
 
+	def __str__(self):
+		return self.email
+		
 	@property
 	def type(self):
 		return self._type

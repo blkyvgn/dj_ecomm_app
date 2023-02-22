@@ -1,0 +1,39 @@
+{% load static %}
+{% load i18n %}
+{% load helpers %}
+
+<!DOCTYPE html>
+<html data-company='{{ company.alias }}' data-theme='{{ company.options.theme|default:"light" }}'>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="cache-control" content="max-age=604800" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <link href="{% static 'company/images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
+	<script src="{% static 'company/js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'company/js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
+	<link href="{% static 'company/css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'company/fonts/fontawesome/css/all.min.css' %}" type="text/css" rel="stylesheet">
+	<link href="{% static 'company/css/ui.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'company/css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1400px)" />
+	<script src="{% static 'company/js/script.js' %}" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'company/css/extra.css' %}">
+	<script type="text/javascript" src="{% static 'company/js/lib/theme.js' %}"></script>
+	<title>{{ company.name|in_lang_or_default }}</title>
+	<meta name="description" content="{% block meta_desc %}{% endblock meta_desc %}">
+	<meta name="keywords" content="{% block meta_keys %}{% endblock meta_keys %}">
+
+
+</head>
+<body>
+	{% include 'partials/messages.html' %}
+	{% block layout %}
+		<!-- layout content -->
+	{% endblock layout %} 
+	<script type="text/javascript" src="{% static 'company/js/extra.js' %}"></script>
+	{% block page_script %}{% endblock page_script %} 
+</body>
+</html>

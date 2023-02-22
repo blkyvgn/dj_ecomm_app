@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # apps
     'ecomm.apps.account.apps.AccountConfig',
+    'ecomm.apps.company.apps.CompanyConfig',
     # extensions
+    'mptt',
     'debug_toolbar',
 ]
 
@@ -134,9 +136,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+    BASE_DIR / 'ecomm/apps/company/static',
 ]
 
 MEDIA_URL = '/media/'
@@ -156,10 +159,14 @@ NUMBER_PER_PAGE = 15
 MIN_PRICE = 0.01
 MAX_PRICE = 1_000_000
 
-THUMBNAIL_WIDTH = 150
-IMAGE_WIDTH = 500
+IMAGE_WIDTH = {
+    'THUMBNAIL': 60,
+    'SHOWCASE': 220,
+    'SLIDER': 500,
+    'LOGO': 170,
+}
 
-SHOP_ALIAS = 'shop'
+COMPANY_ALIAS = 'cmpn'
 EMPTY_VALUE = '_'
 
 # REDIRECT_TO_IF_AUTHENTICATED = '/'
@@ -167,12 +174,25 @@ EMPTY_VALUE = '_'
 # LOGIN_REDIRECT_URL = '/account/dashboard/'
 # LOGIN_URL = '/account/signin/'
 
-DEFAULT_IMAGES = {
-    'PLACEHOLDER': 'images/placeholder.png',
-    'LOGO':        'images/logo.png',
-    'ICON':        'images/icon.png',
+DEFAULT_IMAGE = {
+    'PLACEHOLDER': 'company/images/placeholder.png',
+    'LOGO':        'company/images/logo.png',
+    'ICON':        'company/images/icon.png',
 }
-DEFAULT_IMAGE_KEY = list(DEFAULT_IMAGES)[0]
+
+CACHE_TIMEOUT = {
+    'YEAR':         60 * 60 * 24 * 364,
+    'MONTH':        60 * 60 * 24 * 364,
+    'DAY':          60 * 60 * 24 * 364,
+    'FIVE_MINUTES': 60 * 60 * 5
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR / 'cache',
+    }
+}
 
 AUTHENTICATION_BACKENDS = [
     'ecomm.vendors.utils.auth.AccountBackend',

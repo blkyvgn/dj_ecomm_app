@@ -2,14 +2,17 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ecomm.vendors.base.model import BaseModel
 from django.contrib.auth import get_user_model
+from ecomm.vendors.mixins.model import (
+	TimestampsMixin,
+)
 Account = get_user_model()
 
 
-class Contact(BaseModel):
+class Contact(BaseModel, TimestampsMixin):
 	class Type(models.TextChoices):
-		PHONE      = 'PHONE', _('PHONE')
-		EMAIL      = 'EMAIL', _('SOCIAL_NET')
-		SOCIAL_NET = 'SOCIAL_NET', _('SOCIAL_NET')
+		PHONE      = 'PHONE',      _('Phone')
+		EMAIL      = 'EMAIL',      _('Email')
+		SOCIAL_NET = 'SOCIAL_NET', _('Social net')
 
 	value = models.CharField(
 		max_length=255,
@@ -32,6 +35,7 @@ class Contact(BaseModel):
 	class Meta:
 		verbose_name = _('Contact')
 		verbose_name_plural = _('Contacts')
+		ordering = ('-created_at',)
 
 	@property
 	def type(self):

@@ -1,0 +1,15 @@
+{% extends 'basic.html' %} 
+{% load static %} 
+{% load i18n %}
+
+{% block layout %}
+<div>
+    {% include 'company/partials/navbar/upper.html' with fixed=True %}
+    <main>
+        {% block content %}
+        <!-- page content -->
+        {% endblock content %} 
+    </main>
+    {% include 'company/partials/footer/simple.html' %}
+</div>
+{% endblock layout %} 
