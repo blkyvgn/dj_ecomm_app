@@ -6,7 +6,7 @@ from django.views.generic.base import (
 	TemplateView,
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
-from ecomm.vendors.mixins.view import CommonDataMixin
+from ecomm.vendors.mixins.data import CommonDataMixin
 
 
 class BaseView(CommonDataMixin, ContextMixin, View):

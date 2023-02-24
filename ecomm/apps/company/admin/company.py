@@ -17,6 +17,7 @@ class CompanyAdmin(AdminBaseModel):
 		'get_name',
 		'is_valid',
 	)
+	list_display_links = ('alias',)
 	list_filter = (
 		'is_valid', 
 	)
@@ -46,3 +47,9 @@ class CompanyAdmin(AdminBaseModel):
 				obj.img_url_or_default('logo', settings.DEFAULT_IMAGE['LOGO'])
 			)
 		)
+
+	def save_model(self, request, obj, form, change):
+		super().save_model(request, obj, form, change)
+
+	def delete_model(self, request, obj, form, change):
+		super().delete_model(request, obj, form, change)

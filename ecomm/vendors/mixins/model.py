@@ -68,19 +68,19 @@ class HelpersMixin(models.Model):
 
 class ImgMixin(models.Model):
 	
-	def resize_img(self, img_field_name, width):
-		img = getattr(self, img_field_name)
+	def resize_img(self, img_name, width):
+		img = getattr(self, img_name)
 		if img:
 			new_img = resize_image(img.path, width)
 			if new_img:
 				new_img.save(img.path)
 
-	def img_url_or_default(self, img_field_name, default=settings.DEFAULT_IMAGE['PLACEHOLDER']):
-		img = getattr(self, img_field_name)
+	def img_url_or_default(self, img_name, default=settings.DEFAULT_IMAGE['PLACEHOLDER']):
+		img = getattr(self, img_name)
 		try:
-			url = self.img.url
+			url = img.url
 		except:
-			url = static(settings.DEFAULT_IMAGE['LOGO'])
+			url = static(default)
 		return url
 
 	class Meta:

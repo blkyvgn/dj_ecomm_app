@@ -1,1 +1,1 @@
-from .shop import ShopAdmin
+# from .shop import ShopAdmin

@@ -1,0 +1,11 @@
+{% load mptt_tags %}
+{% load helpers %}
+
+{% recursetree items %}
+    <a class="dropdown-item" href="#">
+        {{ node.name|in_lang_or_default }}
+    </a>
+    {% if not node.is_leaf_node %}
+        <div class="d-none">{{ children }}</div>
+    {% endif %}
+{% endrecursetree %}

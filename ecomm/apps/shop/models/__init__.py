@@ -1,1 +1,1 @@
-from .shop import Shop
+# from .shop import Shop

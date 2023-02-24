@@ -13,7 +13,7 @@ from ecomm.vendors.mixins.model import (
 Account = get_user_model()
 
 def company_logo_upload_to(instance, filename):
-	return f'company/{instance.pk}/logo/{filename}'
+	return f'company/{instance.alias}/logo/{filename}'
 
 class Company(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin, CacheMixin):
 	CACHE_KEY = 'company-{0}'
@@ -51,6 +51,10 @@ class Company(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin, CacheMixin):
 			Company.delete_cache(self.alias)
 		super().save(*args, **kwargs)
 		self.resize_img('logo', settings.IMAGE_WIDTH['LOGO'])
+
+	def delete(self, *args, **kwargs):
+		Company.delete_cache(self.alias)
+		super().delete(*args, **kwargs)
 
 	# @classmethod
 	# def get_from_cache_query(cls, **kwargs):

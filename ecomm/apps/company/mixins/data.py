@@ -6,6 +6,7 @@ from ecomm.apps.company.models import Company
 class CompanyDataMixin:
 
 	def get_company_data(self, **kwargs):
+		context = kwargs
 		company_alias = kwargs.get('alias')
 		company = Company.get_from_cache_or_set(
 			cache_key = company_alias, 
@@ -15,4 +16,5 @@ class CompanyDataMixin:
 		if not company:
 			raise Http404(_('Not found company with alias: %(alias)s' % {'alias': company_alias}))
 		setattr(self.request, 'company', {'id':company.pk, 'alias':company.alias})
-		return company
+		context['company'] = company
+		return context
