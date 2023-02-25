@@ -14,7 +14,6 @@ function getCookie(name) {
 }
 
 const csrftoken = getCookie('csrftoken');
-
 class Logger {
     constructor(options) {
         this.infoMsgPrefix = options.infPref;

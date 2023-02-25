@@ -84,18 +84,3 @@ class ProductTypeAttribute(BaseModel):
 		related_name='type',
 		on_delete=models.PROTECT,
 	)
-
-class ProductAttributeValues(BaseModel):
-	attribute_values = models.ForeignKey(
-		'ProductAttributeValue',
-		related_name='values',
-		on_delete=models.PROTECT,
-	)
-	product = models.ForeignKey(
-		'Product',
-		related_name='attr_values',
-		on_delete=models.PROTECT,
-	)
-
-	class Meta:
-		unique_together = (('attribute_values', 'product'),)

@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from ecomm.vendors.base.model import BaseModel
+from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import (
 	MinValueValidator,
@@ -120,13 +121,13 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 		related_name='base_prods', 
 		on_delete=models.CASCADE
 	)
-	# brand = models.ForeignKey(
-	# 	'Brand',
-	# 	related_name='prod',
-	# 	on_delete=models.SET_NULL,
-	# 	blank=True,
-	# 	null=True,
-	# )
+	brand = models.ForeignKey(
+		'brand.Brand',
+		related_name='prod',
+		on_delete=models.SET_NULL,
+		blank=True,
+		null=True,
+	)
 	product_type = models.ForeignKey(
 		'ProductType', 
 		related_name='prod', 
@@ -197,7 +198,17 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 		_full_name = [*self.prod_base.name.values(), *ext_name]
 		return '@'.join(_full_name)
 
+	@property
+	def ext_name_in_lang_or_default(self, lang_key=get_language()):
+		try:
+			ext_name = self.ext_name.get(lang_key, self.ext_name.get(settings.LANGUAGE_CODE, None))
+		except:
+			ext_name = None
+		return ext_name
+
 	def save(self, *args, **kwargs):
 		self.full_name = self.get_full_name()
 		super().save(*args, **kwargs)
 		self.resize_img('thumb', settings.IMAGE_WIDTH['THUMBNAIL'])
+
+

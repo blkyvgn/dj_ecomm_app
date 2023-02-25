@@ -1,3 +1,19 @@
+function getCookieTheme(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const theme_csrftoken = getCookieTheme('csrftoken');
+
 const themes = {
     light: {
         '--bg-html-color': '#FFFFFF',
@@ -86,7 +102,7 @@ class ThemeManager {
         }
         this.docStyle = document.documentElement.style;
         this.currentTheme = this.defaultTheme;
-        this.saveUrl = null;
+        this.saveUrl = options.saveUrl;
         this.set();
     }
     getDefaultThemeIfNotExist(theme) {
@@ -119,16 +135,34 @@ class ThemeManager {
         localStorage.setItem('theme', newTheme);
         this.currentTheme = newTheme
         if (this.saveUrl != null) {
-            this.serverHandler({'theme':newTheme})
+            this.fetchSaveUrl({'theme':newTheme});
         }
     }
     fetchSaveUrl(themeObj) {
-        console.log('save theme: ', themeObj);
+        const data = optionObj;
+        fetch(this.saveUrl, {  
+            method: 'post',  
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': theme_csrftoken,
+            },
+            body: JSON.stringify(data)
+        })
+        .then((response) => {
+            return response.json()
+        })  
+        .then((json) => {
+            console.log('Request succeeded with JSON response', json);  
+        })  
+        .catch(function (error) {  
+            console.log('Request failed', error);  
+        });
     }
 }
-
 const theme = new ThemeManager({
     themeSelector: 'html', 
     themes: themes,
     default: 'light',
+    saveUrl: null, // document.querySelector('html').dataset.company + '/options/',
 })

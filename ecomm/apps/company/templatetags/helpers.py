@@ -14,9 +14,9 @@ def in_lang_or_default(val, lang_key=get_language()):
     return res
 
 @register.filter(name='url_or_default')
-def url_or_default(img, key=settings.DEFAULT_IMAGE['PLACEHOLDER']):
+def url_or_default(img, key=settings.DEFAULT_IMAGE_KEY):
     try:
         url = img.url
     except:
-        url = static(key)
+        url = static(settings.DEFAULT_IMAGE[key])
     return url

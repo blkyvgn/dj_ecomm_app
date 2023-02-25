@@ -49,6 +49,10 @@ INSTALLED_APPS = [
     'ecomm.apps.shop.apps.ShopConfig',
     'ecomm.apps.category.apps.CategoryConfig',
     'ecomm.apps.product.apps.ProductConfig',
+    'ecomm.apps.delivery.apps.DeliveryConfig',
+    'ecomm.apps.brand.apps.BrandConfig',
+    'ecomm.apps.sale.apps.SaleConfig',
+    'ecomm.apps.stock.apps.StockConfig',
     # extensions
     'mptt',
     'debug_toolbar',
@@ -182,6 +186,7 @@ DEFAULT_IMAGE = {
     'LOGO':        'company/images/default/logo.png',
     'ICON':        'company/images/default/icon.png',
 }
+DEFAULT_IMAGE_KEY = list(DEFAULT_IMAGE)[0]
 
 CACHE_TIMEOUT = {
     'YEAR':         60 * 60 * 24 * 364,

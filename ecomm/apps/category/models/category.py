@@ -64,7 +64,7 @@ class Category(MPTTModel, BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMi
 		verbose_name=_('parent of category'),
 		help_text=_('format: not required'),
 	)
-	order = models.IntegerField(
+	position = models.IntegerField(
 		default=0,
 	)
 	created_by = models.ForeignKey(
@@ -88,7 +88,7 @@ class Category(MPTTModel, BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMi
 	)
 
 	class MPTTMeta:
-		order_insertion_by = ['order']
+		order_insertion_by = ['-position']
 
 	class Meta:
 		verbose_name = _('Category')

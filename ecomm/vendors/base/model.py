@@ -1,6 +1,7 @@
 import logging
 from django.db import models
 from django.contrib import admin
+from django.utils.timezone import now
 from django.db.models import Prefetch
 from django.db.models import Q
 from django.conf import settings
@@ -64,10 +65,28 @@ class BaseModel(models.Model):
 	def get_first_by_filters(cls, _or=False, **kwargs):
 		return cls.objs.filter_by_params(_or, **kwargs).first()
 
+	def save(self, *args, **kwargs):
+		if self.pk:
+			if hasattr(self, 'updated_at'):
+				self.updated_at = now()
+		super().save(*args, **kwargs)
+
+	def delete(self, *args, **kwargs):
+		super().delete(*args, **kwargs)
+
 
 class EmptyBaseModel(models.Model):
 	class Meta:
 		abstract = True
 
 class AdminBaseModel(admin.ModelAdmin):
-    empty_value_display = settings.EMPTY_VALUE
+	empty_value_display = settings.EMPTY_VALUE
+
+	def save_model(self, request, obj, form, change):
+		if change:
+			if hasattr(obj, 'updated_by'):
+				obj.updated_by = request.user
+		else:
+			if hasattr(obj, 'created_by'):
+				obj.created_by = request.user
+		super().save_model(request, obj, form, change)

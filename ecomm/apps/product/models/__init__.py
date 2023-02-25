@@ -6,6 +6,7 @@ from .product import (
 from .attribute import (
 	ProductAttribute,
 	ProductAttributeValue,
+	ProductAttributeValues,
 )
 from .prod_type import (
 	ProductType,

@@ -101,6 +101,8 @@ class ProductAttributeValuesInline(admin.StackedInline):
 			)
 		}),
 	)
+	# search_fields = ('attribute_values',)
+	# raw_id_fields = ['attribute_values',]
 
 @admin.register(Product)
 class ProductAdmin(AdminBaseModel):
@@ -116,7 +118,7 @@ class ProductAdmin(AdminBaseModel):
 				'thumb',
 				'ext_name',
 				'prod_base',
-				# 'brand',
+				'brand',
 				'product_type',
 				'price',
 				'sale_price',
@@ -144,13 +146,14 @@ class ProductAdmin(AdminBaseModel):
 		ProductAttributeValuesInline,
 		MediaInline,
 	]
+	list_display_links = ('slug',)
 	search_fields = ('slug',)
 	ordering = ('-created_at',)
 	raw_id_fields = ['prod_base', 'product_type',]
 
-	@admin.display(description='Name')
+	@admin.display(description='Name(ext)')
 	def get_name(self, obj):
-		return obj.name_in_lang_or_default
+		return obj.ext_name_in_lang_or_default
 
 	@admin.display(description='Thumb')
 	def get_thumb(self, obj):

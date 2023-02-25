@@ -42,9 +42,8 @@ class CategoryAdmin(AdminBaseModel, CategoryMPTTModelAdmin):
 		}),
 	)
 	search_fields = ('slug',)
-	ordering = ('-created_at',)
 	prepopulated_fields = {'slug': ('name',)}
-	raw_id_fields = ['parent', 'company',]
+	raw_id_fields = ['parent',]
 
 	@admin.display(description='Name')
 	def get_name(self, obj):

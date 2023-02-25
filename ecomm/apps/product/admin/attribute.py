@@ -59,7 +59,6 @@ class ProductAttributeAdmin(AdminBaseModel):
 	search_fields = ('slug',)
 	ordering = ('-created_at',)
 	prepopulated_fields = {'slug': ('name',)}
-	raw_id_fields = ['company',]
 
 	@admin.display(description='Name')
 	def get_name(self, obj):
