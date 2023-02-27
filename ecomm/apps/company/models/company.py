@@ -56,9 +56,9 @@ class Company(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin, CacheMixin):
 		Company.delete_cache(self.alias)
 		super().delete(*args, **kwargs)
 
-	# @classmethod
-	# def get_from_cache_query(cls, **kwargs):
-	# 	return cls.get_first_by_filters(is_valid=True, alias=kwargs.get('cache_key'))
+	@classmethod
+	def get_from_cache(cls, **kwargs):
+		return cls.objs.valid().filter(alias=kwargs.get('cache_key')).first()
 
 	# @classmethod
 	# def get_cache_key(cls, **kwargs):

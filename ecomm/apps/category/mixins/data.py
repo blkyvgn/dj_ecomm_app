@@ -8,8 +8,8 @@ class CategoriesDataMixin:
 	def get_categories_data(self, **kwargs):
 		context = kwargs
 		categories = Category.get_from_cache_or_set(
-			cache_key = context['company'].alias, 
-			query_set = Category.objs.valid().company(context['company'].id),
+			cache_key = self.request.company.alias, 
+			query_set = Category.objs.valid().company(self.request.company.id),
 			timeout = settings.CACHE_TIMEOUT['YEAR']
 		)
 		context['categories'] = categories

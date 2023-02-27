@@ -15,6 +15,10 @@ from ecomm.vendors.mixins.model import (
 	HelpersMixin,
 	MetaDataMixin,
 )
+from django.db.models import (
+	F, 
+	Count,
+)
 Account = get_user_model()
 
 
@@ -209,6 +213,12 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 	def save(self, *args, **kwargs):
 		self.full_name = self.get_full_name()
 		super().save(*args, **kwargs)
-		self.resize_img('thumb', settings.IMAGE_WIDTH['THUMBNAIL'])
+		self.resize_img('thumb', settings.IMAGE_WIDTH['SHOWCASE'])
+
+	@classmethod
+	def get_popular(cls, company_id, per_page):
+		return cls.objs.valid().company(company_id).\
+			annotate(sold=F('stock_prod__units_sold')).\
+			select_related('prod_base').order_by('-sold')[:per_page]
 
 

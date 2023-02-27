@@ -88,7 +88,7 @@ class Category(MPTTModel, BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMi
 	)
 
 	class MPTTMeta:
-		order_insertion_by = ['-position']
+		order_insertion_by = ['-created_at']
 
 	class Meta:
 		verbose_name = _('Category')

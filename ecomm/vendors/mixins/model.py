@@ -91,6 +91,7 @@ class CacheMixin():
 	''' Set CACHE_KEY format str in class 
 		or add classmethods get_cache_key(cls, **kwargs): return full cache key,
 		get_from_cache_or_set(cls, **kwargs): return result of query '''
+	''' use query_set in parameters only if for getting query_set not item '''
 	@classmethod
 	def get_full_cache_key(cls, cache_key=None):
 		if hasattr(cls, 'CACHE_KEY'):
@@ -108,13 +109,13 @@ class CacheMixin():
 		full_cache_key = cls.get_full_cache_key(cache_key)
 
 		res = cache.get(full_cache_key, None)
-		if not res:
-			if query_set == False and not hasattr(cls, 'get_from_cache_query'):
+		if res is None:
+			if query_set == False and not hasattr(cls, 'get_from_cache'):
 				raise ValueError('query_set cannot be None')
 
 			if query_set != False:
 				res = query_set
-			elif hasattr(cls, 'get_from_cache_query'):
+			elif hasattr(cls, 'get_from_cache'):
 				res = cls.get_from_cache(cache_key=cache_key)
 			else:
 				raise ValueError('query_set cannot be None')

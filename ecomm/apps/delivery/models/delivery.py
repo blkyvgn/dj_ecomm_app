@@ -34,7 +34,7 @@ class Delivery(BaseModel, TimestampsMixin, HelpersMixin):
 		max_digits=5,
 		decimal_places=2,
 		validators=[
-			MinValueValidator(settings.MIN_PRICE),
+			MinValueValidator(settings.MIN_DELIVERY_PRICE),
 			MaxValueValidator(settings.MAX_PRICE),
 		],
 	)

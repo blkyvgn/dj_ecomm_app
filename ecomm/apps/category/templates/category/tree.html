@@ -2,7 +2,7 @@
 {% load helpers %}
 
 {% recursetree items %}
-    <a class="dropdown-item" href="#">
+    <a class="dropdown-item" href="{% url 'company:category' company.alias node.slug %}">
         {{ node.name|in_lang_or_default }}
     </a>
     {% if not node.is_leaf_node %}

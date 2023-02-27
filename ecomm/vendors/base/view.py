@@ -1,36 +1,30 @@
 from django.views import View
-from django.views.generic.base import (
-	TemplateResponseMixin,
-	ContextMixin, 
-	View,
-	TemplateView,
-)
+from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from ecomm.vendors.mixins.data import CommonDataMixin
 
 
-class BaseView(CommonDataMixin, ContextMixin, View):
-
+class BaseTemplateView(CommonDataMixin, TemplateView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		common_data = self.get_common_data(**kwargs)
+		common_data = self.get_common_data(**context)
 		return {**context, **common_data}
 
-class ProtectBaseView(LoginRequiredMixin, BaseView):
-	pass
+class ProtectBaseTemplateView(LoginRequiredMixin, CommonDataMixin, TemplateView):
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		common_data = self.get_common_data(**context)
+		return {**context, **common_data}
 
+class BaseDetailView(CommonDataMixin, DetailView):
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		common_data = self.get_common_data(**context)
+		return {**context, **common_data}
 
-
-class BaseTemplateView(TemplateResponseMixin, BaseView):
-	
-	def get(self, request, *args, **kwargs):
-		context = self.get_context_data(**kwargs)
-		return self.render_to_response(context)
-	
-
-class ProtectBaseTemplateView(TemplateResponseMixin, ProtectBaseView):
-	
-	def get(self, request, *args, **kwargs):
-		context = self.get_context_data(**kwargs)
-		return self.render_to_response(context)
-
+class ProtectBaseDetailView(LoginRequiredMixin, CommonDataMixin, DetailView):
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		common_data = self.get_common_data(**context)
+		return {**context, **common_data}

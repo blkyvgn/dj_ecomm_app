@@ -12,7 +12,7 @@ from ecomm.vendors.mixins.model import (
 Account = get_user_model()
 
 def product_media_upload_to(instance, filename):
-	return f'company/grkr/prod/{instance.product.slug}/media/{filename}'
+	return f'company/{instance.product.company.alias}/product/{instance.product.slug}/media/{filename}'
 
 class Media(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	image = models.ImageField(

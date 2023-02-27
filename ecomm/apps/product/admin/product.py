@@ -48,8 +48,9 @@ class ProductBaseAdmin(AdminBaseModel):
 		'is_valid',
 	]
 	list_filter = [
-		'slug',
+		'is_valid',
 	]
+	search_fields = ('slug',)
 	raw_id_fields = ['category',]
 	inlines = [
 		ProductBaseTranslationInline,
@@ -90,7 +91,7 @@ class MediaInline(admin.StackedInline):
 				obj.img_url_or_default('image', settings.DEFAULT_IMAGE['PLACEHOLDER'])
 			)
 		)
-
+# TabularInline
 class ProductAttributeValuesInline(admin.StackedInline):
 	model = Product.attribute_values.through
 	extra = 1
@@ -140,7 +141,8 @@ class ProductAdmin(AdminBaseModel):
 		'is_valid',
 	]
 	list_filter = [
-		'slug',
+		'is_valid',
+		'is_default',
 	]
 	inlines = [
 		ProductAttributeValuesInline,

@@ -17,10 +17,6 @@ class CompanyAdmin(AdminBaseModel):
 		'get_name',
 		'is_valid',
 	)
-	list_display_links = ('alias',)
-	list_filter = (
-		'is_valid', 
-	)
 	fieldsets = (
 		(None, {
 			'fields': (
@@ -31,6 +27,10 @@ class CompanyAdmin(AdminBaseModel):
 				'is_valid',
 			)
 		}),
+	)
+	list_display_links = ('alias',)
+	list_filter = (
+		'is_valid', 
 	)
 	search_fields = ('alias',)
 	ordering = ('-created_at',)
