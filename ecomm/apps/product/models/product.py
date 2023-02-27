@@ -25,7 +25,6 @@ Account = get_user_model()
 class ProductBase(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin):
 	slug = models.SlugField(
 		max_length=180,
-		unique=True,
 		verbose_name=_('Product(base) URL'),
 	)
 	name = models.JSONField()
@@ -63,8 +62,11 @@ class ProductBase(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin):
 	class Meta:
 		verbose_name = _('Base product')
 		verbose_name_plural = _('Base products')
+		constraints = [
+			models.UniqueConstraint(fields=['company_id', 'slug'], name='unique_prod_base_slug')
+		]
 		indexes = [
-			models.Index(fields=['slug',]),
+			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
 	def __str__(self):
@@ -96,15 +98,21 @@ def product_thumb_upload_to(instance, filename):
 	return f'company/{instance.company.alias}/product/{instance.slug}/thumb/{filename}'
 
 
+class PopulateSoldManager(models.Manager):
+	def get_queryset(self):
+		return super().get_queryset().annotate(
+				units=F('stock_prod__units'),
+				sold=F('stock_prod__units_sold')
+			).order_by('-sold')
+
+
 class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixin):
 	slug = models.SlugField(
 		max_length=255,
-		unique=True,
 		verbose_name=_('Product URL'),
 	)
 	sku = models.CharField(
 		max_length=20,
-		unique=True,
 	)
 	thumb = models.ImageField(
 		upload_to=product_thumb_upload_to, 
@@ -193,8 +201,13 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 		verbose_name = _('Product')
 		verbose_name_plural = _('Products')
 		ordering = ('-created_at',)
+		constraints = [
+			models.UniqueConstraint(fields=['company_id', 'sku'], name='unique_product_sku'),
+			models.UniqueConstraint(fields=['company_id', 'slug'], name='unique_product_slug'),
+		]
 		indexes = [
-			models.Index(fields=['slug', 'sku',]),
+			models.Index(fields=('company_id', 'sku')), # condition='TRUE'
+			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
 	def get_full_name(self):

@@ -15,7 +15,6 @@ class Coupon(BaseModel, TimestampsMixin, HelpersMixin):
 	)
 	coupon_code = models.CharField(
 		max_length=20,
-		unique = True,
 	)
 	created_by = models.ForeignKey(
 		Account, 
@@ -43,6 +42,9 @@ class Coupon(BaseModel, TimestampsMixin, HelpersMixin):
 	class Meta:
 		verbose_name = _('Coupon')
 		verbose_name_plural = _('Coupons')
+		constraints = [
+			models.UniqueConstraint(fields=['company_id', 'coupon_code'], name='unique_coupon_code_slug')
+		]
 		indexes = [
-			models.Index(fields=['coupon_code',]),
+			models.Index(fields=('company_id', 'coupon_code')), # condition='TRUE'
 		]

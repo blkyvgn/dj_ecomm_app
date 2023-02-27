@@ -11,7 +11,11 @@ class ShopView(BaseTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         products = Product.objs.valid().company(self.request.company.id).\
-            annotate(units=F('stock_prod__units')).\
-            select_related('prod_base')
-        context['products'] = paginator(self.request, products, per_page=3) # settings.NUMBER_PER_PAGE
+            annotate(
+                units=F('stock_prod__units'),
+                sold=F('stock_prod__units_sold')
+            ).\
+            select_related('prod_base').\
+            order_by('-sold')
+        context['products'] = paginator(self.request, products, per_page=settings.NUMBER_PER_PAGE)
         return context

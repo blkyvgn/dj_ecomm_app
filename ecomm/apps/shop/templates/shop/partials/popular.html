@@ -5,9 +5,7 @@
 			<h3 class="section-title">Popular products</h3>
 		</header>
 		<div class="row">
-			{% for prod in products %}
-				{% include 'product/popular_item.html' with item=prod %}
-			{% endfor %}
+			{% include 'product/popular_list.html' with items=products %}
 		</div>
 	</div>
 </section>

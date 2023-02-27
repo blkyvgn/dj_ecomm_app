@@ -14,6 +14,34 @@ function getCookie(name) {
 }
 
 const csrftoken = getCookie('csrftoken');
+
+const currentLocation = (expr='hostname') => {
+    let location = null
+    switch (expr) {
+        case 'hostname':
+            location = window.location.hostname
+            break;
+        case 'pathname':
+            location = window.location.pathname
+            break;
+        case 'protocol':
+            location = window.location.protocol
+            break;
+        case 'assign':
+            location = window.location.assign()
+            break;
+        case 'base':
+            location = window.location.href.split('?')[0]
+            break;
+        case 'params':
+            location = window.location.href.split('?')[1]
+            break;
+        default:
+            location = window.location.href
+    }
+    return location
+}
+
 class Logger {
     constructor(options) {
         this.infoMsgPrefix = options.infPref;

@@ -31,7 +31,6 @@ class Category(MPTTModel, BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMi
 
 	slug = models.SlugField(
 		max_length=150,
-		unique=True,
 		verbose_name=_('Category URL'),
 		help_text=_(
 			'format: required, letters, numbers, underscore, or hyphens'
@@ -93,8 +92,11 @@ class Category(MPTTModel, BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMi
 	class Meta:
 		verbose_name = _('Category')
 		verbose_name_plural = _('Categories')
+		constraints = [
+			models.UniqueConstraint(fields=['company_id', 'slug'], name='unique_category_slug')
+		]
 		indexes = [
-			models.Index(fields=['slug',]),
+			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
 	def __str__(self):

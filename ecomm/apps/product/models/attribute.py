@@ -22,7 +22,6 @@ class ProductAttribute(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 
 	slug = models.SlugField(
 		max_length=255,
-		unique=True,
 	)
 	thumb = models.ImageField(
 		upload_to=prod_attribut_thumb_upload_to, 
@@ -55,8 +54,11 @@ class ProductAttribute(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	class Meta:
 		verbose_name = _('Product attribute')
 		verbose_name_plural = _('Product attributes')
+		constraints = [
+			models.UniqueConstraint(fields=['company_id', 'slug'], name='unique_attribute_slug')
+		]
 		indexes = [
-			models.Index(fields=['slug',]),
+			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
 

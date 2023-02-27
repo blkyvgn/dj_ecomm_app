@@ -17,7 +17,6 @@ def brand_logo_upload_to(instance, filename):
 class Brand(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	slug = models.SlugField(
 		max_length=180,
-		unique=True,
 		verbose_name=_('Brand URL'),
 	)
 	name = models.JSONField(
@@ -59,8 +58,11 @@ class Brand(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	class Meta:
 		verbose_name = _('Brand')
 		verbose_name_plural = _('Brands')
+		constraints = [
+			models.UniqueConstraint(fields=['company_id', 'slug'], name='unique_brand_slug')
+		]
 		indexes = [
-			models.Index(fields=['slug',]),
+			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
 	def save(self, *args, **kwargs):

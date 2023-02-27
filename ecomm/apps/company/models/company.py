@@ -20,6 +20,7 @@ class Company(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin, CacheMixin):
 
 	alias = models.CharField(
 		max_length=30, 
+		unique=True,
 	)
 	name = models.JSONField(
 		null=True, 

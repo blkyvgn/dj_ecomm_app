@@ -22,7 +22,6 @@ def sale_image_upload_to(instance, filename):
 class Sale(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	slug = models.SlugField(
 		max_length=255, 
-		unique=True
 	)
 	name = models.JSONField()
 	short_desc = models.JSONField()
@@ -80,8 +79,11 @@ class Sale(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	class Meta:
 		verbose_name = _('Sale')
 		verbose_name_plural = _('Sales')
+		constraints = [
+			models.UniqueConstraint(fields=['company_id', 'slug'], name='unique_sale_slug')
+		]
 		indexes = [
-			models.Index(fields=['slug',]),
+			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
 	def save(self, *args, **kwargs):

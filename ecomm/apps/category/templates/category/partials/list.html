@@ -1,0 +1,17 @@
+{% load mptt_tags %}
+{% load helpers %}
+
+<ul class="list-menu">
+    {% recursetree cat_items %}
+        <li class="list-menu">
+            <a href="{% url 'company:category' company.alias node.slug %}">
+        		{{ node.name|in_lang_or_default }}
+    		</a>
+            {% if not node.is_leaf_node %}
+                <ul class="d-none list-menu children">
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>

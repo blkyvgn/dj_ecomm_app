@@ -14,18 +14,24 @@ class CategoryView(BaseDetailView):
 
 	def get_object(self):
 		cat_slug = self.kwargs.get(self.slug_url_kwarg, None)
-		company = self.model.objs.valid().company(self.request.company.id).\
+		category = self.model.objs.valid().company(self.request.company.id).\
 			filter(slug=cat_slug).first()
-		if company is None:
+		if category is None:
 			Http404('Not found category %(slug)s' % {'slug': cat_slug})
-		return company
+		return category
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		category = kwargs.get('object')
 		products = Product.objs.valid().company(self.request.company.id).\
-			filter(prod_base__category_id=category.id).\
-			annotate(units=F('stock_prod__units')).\
-			select_related('prod_base')
-		context['products'] = paginator(self.request, products, per_page=3) # settings.NUMBER_PER_PAGE
+			filter(
+				prod_base__category__in=Category.objs.get(slug=category.slug).get_descendants(include_self=True)
+			).\
+			annotate(
+				units=F('stock_prod__units'),
+				sold=F('stock_prod__units_sold')
+			).\
+			select_related('prod_base').\
+			order_by('-sold')
+		context['products'] = paginator(self.request, products, per_page=settings.NUMBER_PER_PAGE)
 		return context

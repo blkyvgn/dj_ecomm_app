@@ -22,7 +22,6 @@ class ProductType(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 
 	slug = models.SlugField(
 		max_length=255,
-		unique=True,
 	)
 	thumb = models.ImageField(
 		upload_to=prod_type_thumb_upload_to, 
@@ -67,8 +66,11 @@ class ProductType(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	class Meta:
 		verbose_name = _('Product type')
 		verbose_name_plural = _('Product types')
+		constraints = [
+			models.UniqueConstraint(fields=['company_id', 'slug'], name='unique_prod_type_slug')
+		]
 		indexes = [
-			models.Index(fields=['slug',]),
+			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
 
