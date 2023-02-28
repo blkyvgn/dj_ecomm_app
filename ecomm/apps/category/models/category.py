@@ -89,6 +89,9 @@ class Category(MPTTModel, BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMi
 	class MPTTMeta:
 		order_insertion_by = ['-created_at']
 
+	def __str__(self):
+		return self.slug
+
 	class Meta:
 		verbose_name = _('Category')
 		verbose_name_plural = _('Categories')
@@ -99,8 +102,13 @@ class Category(MPTTModel, BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMi
 			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
-	def __str__(self):
-		return self.slug
+	def get_url(self):
+		return reverse(
+			'company:category', 
+			kwargs={
+				'alias': settings.COMPANY_ALIAS,
+				'cat_slug': self.slug,
+			})
 
 	def save(self, *args, **kwargs):
 		Category.delete_cache(self.company.alias)

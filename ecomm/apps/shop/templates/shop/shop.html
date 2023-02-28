@@ -1,12 +1,14 @@
 <section class="section-content padding-y">
     <div class="container">
         <div class="row">
-	        <aside class="col-md-3">
+	        <!-- <aside class="col-md-3">
 	            <div class="card">
-	                {% include 'shop/partials/filters.html' with cat_items=categories %}
+	            	{% comment %}
+	            		{% include 'shop/partials/filters.html' with cat_items=categories %}
+	            	{% endcomment %}
 	            </div>
-	        </aside>
-	        <main class="col-md-9">
+	        </aside> -->
+	        <main> <!-- class="col-md-9" -->
 	            <header class="border-bottom mb-4 pb-3">
 	                <div class="form-inline">
 	                    <span class="mr-md-auto">{{ products.paginator.count }} Items found </span>

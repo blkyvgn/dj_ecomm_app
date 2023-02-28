@@ -32,15 +32,19 @@ def is_gt_settings_val(val, settings_key):
 
 
 @register.filter(name='slice_page_range')
-def slice_page_range(val, page_number, by_val=settings.NUMBER_PAGINATIONS):
-    print(page_number)
-    print(by_val)
-    if len(val) < by_val:
-        return val
+def slice_page_range(val, page_number, by_number=settings.NUMBER_PAGINATIONS):
+    if len(val.page_range) < by_number:
+        return val.page_range
     else:
-        return val
-        # list_pages = list(val)
-        # first = list_pages[:by_val]
-        # del list_pages[:by_val]
-        # last = list_pages[-by_val:]
-        # return [*first, None, *last]
+        falf_number = int(by_number/2 if by_number%2==0 else (by_number-1)/2)
+        full_number = int(falf_number*2)
+        first = int(page_number - falf_number)
+        last = int(page_number + falf_number)
+        if first < 0:
+            first = 0
+            last = full_number
+        if last > val.num_pages:
+            last = val.num_pages
+            first = last - full_number
+        res = list(val.page_range)[first:last] 
+        return res

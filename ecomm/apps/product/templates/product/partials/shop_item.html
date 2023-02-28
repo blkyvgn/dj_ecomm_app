@@ -9,7 +9,7 @@
 		</div>
 		<figcaption class="info-wrap">
 			<div class="fix-height">
-				<a href="./product-detail.html" class="title">
+				<a href="{% url 'company:product' company.alias item.cat_slug item.slug %}" class="title">
 					{{ item.prod_base.name|in_lang_or_default }}
 				</a>
 				<div class="price-wrap mt-2">

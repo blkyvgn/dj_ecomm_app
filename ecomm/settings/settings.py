@@ -14,8 +14,7 @@ from pathlib import Path
 from ecomm.vendors import data
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -52,6 +51,10 @@ INSTALLED_APPS = [
     'ecomm.apps.delivery.apps.DeliveryConfig',
     'ecomm.apps.brand.apps.BrandConfig',
     'ecomm.apps.sale.apps.SaleConfig',
+    'ecomm.apps.order.apps.OrderConfig',
+    'ecomm.apps.cart.apps.CartConfig',
+    'ecomm.apps.compare.apps.CompareConfig',
+    'ecomm.apps.wish.apps.WishConfig',
     'ecomm.apps.stock.apps.StockConfig',
     # extensions
     'mptt',
@@ -160,42 +163,42 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CUSTOM USER
 AUTH_USER_MODEL = 'account.Account'
 
-# DEFAULT 
-NUMBER_PER_PAGE = 15
-NUMBER_PAGINATIONS = 10
+# # DEFAULT 
+# NUMBER_PER_PAGE = 15
+# NUMBER_PAGINATIONS = 10
 
-MIN_PRICE = 0.01
-MAX_PRICE = 1_000_000
-MIN_DELIVERY_PRICE = 0.00
+# MIN_PRICE = 0.01
+# MAX_PRICE = 1_000_000
+# MIN_DELIVERY_PRICE = 0.00
 
-IMAGE_WIDTH = {
-    'THUMBNAIL': 60,
-    'SHOWCASE': 220,
-    'SLIDER': 500,
-    'LOGO': 170,
-}
+# IMAGE_WIDTH = {
+#     'THUMBNAIL': 60,
+#     'SHOWCASE': 220,
+#     'SLIDER': 500,
+#     'LOGO': 170,
+# }
 
-COMPANY_ALIAS = 'grkr'
-EMPTY_VALUE = '_'
+# COMPANY_ALIAS = 'grkr'
+# EMPTY_VALUE = '_'
 
-# REDIRECT_TO_IF_AUTHENTICATED = '/'
+# # REDIRECT_TO_IF_AUTHENTICATED = '/'
 
-# LOGIN_REDIRECT_URL = '/account/dashboard/'
-# LOGIN_URL = '/account/signin/'
+# # LOGIN_REDIRECT_URL = '/account/dashboard/'
+# # LOGIN_URL = '/account/signin/'
 
-DEFAULT_IMAGE = {
-    'PLACEHOLDER': 'company/images/default/placeholder.png',
-    'LOGO':        'company/images/default/logo.png',
-    'ICON':        'company/images/default/icon.png',
-}
-DEFAULT_IMAGE_KEY = list(DEFAULT_IMAGE)[0]
+# DEFAULT_IMAGE = {
+#     'PLACEHOLDER': 'company/images/default/placeholder.png',
+#     'LOGO':        'company/images/default/logo.png',
+#     'ICON':        'company/images/default/icon.png',
+# }
+# DEFAULT_IMAGE_KEY = list(DEFAULT_IMAGE)[0]
 
-CACHE_TIMEOUT = {
-    'YEAR':         60 * 60 * 24 * 364,
-    'MONTH':        60 * 60 * 24 * 364,
-    'DAY':          60 * 60 * 24 * 364,
-    'FIVE_MINUTES': 60 * 60 * 5
-}
+# CACHE_TIMEOUT = {
+#     'YEAR':         60 * 60 * 24 * 364,
+#     'MONTH':        60 * 60 * 24 * 364,
+#     'DAY':          60 * 60 * 24 * 364,
+#     'FIVE_MINUTES': 60 * 60 * 5
+# }
 
 CACHES = {
     'default': {
@@ -263,21 +266,21 @@ CELERY_RESULT_BACKEND = 'django-db'
 # CELERY_RESULT_BACKEND = 'redis://'+REDIS_HOST+':'+REDIS_PORT+'/0'
 
 
-# PAYPAL
-CLIENT_ID = 'ARq8zA5Dbrdn3elQrn5k97H-NIDJSsDvLzHrqli1e0H2t0vLGyioRm2qwi1K0XGfAo-4_MfsbpeyfLzK'
-CLIENT_SECRET = 'EDd7Saj1aKGruvefK38zhqlssB-0IOad9j5lFs9nuaMxNH2n3HJmHGxFuwH74L3Xd0eGxfD_10b7Wtpm'
-test_pay_email = 'sb-4m5jo20987729@personal.example.com'
-test_pay_password ='3yH5.L7>'
+# # PAYPAL
+# CLIENT_ID = 'ARq8zA5Dbrdn3elQrn5k97H-NIDJSsDvLzHrqli1e0H2t0vLGyioRm2qwi1K0XGfAo-4_MfsbpeyfLzK'
+# CLIENT_SECRET = 'EDd7Saj1aKGruvefK38zhqlssB-0IOad9j5lFs9nuaMxNH2n3HJmHGxFuwH74L3Xd0eGxfD_10b7Wtpm'
+# test_pay_email = 'sb-4m5jo20987729@personal.example.com'
+# test_pay_password ='3yH5.L7>'
 
-HIDDEN_SVG = '<svg \
-xmlns="http://www.w3.org/2000/svg" \
-width="40" height="40" fill="currentColor" viewBox="0 0 16 16">\
-<path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 \
-0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.\
-48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474\
--4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.\
-823a2.5 2.5 0 0 0 2.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 \
-8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.\
-029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 \
-12-.708.708z"/>\
-</svg>'
+# HIDDEN_SVG = '<svg \
+# xmlns="http://www.w3.org/2000/svg" \
+# width="40" height="40" fill="currentColor" viewBox="0 0 16 16">\
+# <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 \
+# 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.\
+# 48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/><path d="M11.297 9.176a3.5 3.5 0 0 0-4.474\
+# -4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.\
+# 823a2.5 2.5 0 0 0 2.829 2.829z"/><path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 \
+# 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.\
+# 029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 \
+# 12-.708.708z"/>\
+# </svg>'

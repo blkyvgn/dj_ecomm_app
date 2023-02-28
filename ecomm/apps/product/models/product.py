@@ -15,6 +15,7 @@ from ecomm.vendors.mixins.model import (
 	HelpersMixin,
 	MetaDataMixin,
 )
+from django.urls import reverse
 from django.db.models import (
 	F, 
 	Count,
@@ -210,6 +211,15 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 			models.Index(fields=('company_id', 'slug')), # condition='TRUE'
 		]
 
+	def get_url(self):
+		return reverse(
+			'company:product', 
+			kwargs={
+				'alias': settings.COMPANY_ALIAS,
+				'cat_slug': self.prod_base.category.slug,
+				'prod_slug': self.slug,
+			})
+
 	def get_full_name(self):
 		ext_name = self.ext_name.values() if self.ext_name else []
 		_full_name = [*self.prod_base.name.values(), *ext_name]
@@ -231,7 +241,21 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 	@classmethod
 	def get_popular(cls, company_id, per_page):
 		return cls.objs.valid().company(company_id).\
-			annotate(sold=F('stock_prod__units_sold')).\
-			select_related('prod_base').order_by('-sold')[:per_page]
+			select_related('prod_base').\
+			annotate(
+				sold=F('stock_prod__units_sold'),
+				cat_slug=F('prod_base__category__slug'),
+			).\
+			order_by('-sold')[:per_page]
+
+	list_values = [
+		'id', 
+		'prod_base_id', 
+		'prod_base__name', 
+		'thumb', 
+		'ext_name', 
+		'price', 
+		'sale_price',
+	]
 
 

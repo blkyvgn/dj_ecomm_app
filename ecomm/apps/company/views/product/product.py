@@ -2,7 +2,11 @@ from django.conf import settings
 from ecomm.vendors.base.view import BaseTemplateView, BaseDetailView
 from ecomm.vendors.helpers.pagination import paginator
 from ecomm.apps.category.models import Category
-from ecomm.apps.product.models import Product
+from ecomm.apps.product.models import (
+	Product,
+	ProductType,
+	ProductTypeAttribute,
+)
 from django.http import Http404
 from django.db.models import F
 
@@ -16,6 +20,8 @@ class ProdictView(BaseDetailView):
 	def get_object(self):
 		prod_slug = self.kwargs.get(self.slug_url_kwarg, None)
 		product = self.model.objs.valid().company(self.request.company.id).\
+			prefetch_related('media').\
+			select_related('prod_base').\
 			filter(slug=prod_slug).first()
 		if product is None:
 			Http404('Not found product %(slug)s' % {'slug': prod_slug})
@@ -23,4 +29,19 @@ class ProdictView(BaseDetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		product = kwargs.get('object')
+		attributes = ProductTypeAttribute.objs.filter(prod_type__prod__slug=product.slug).\
+			values(
+				slug=F('prod_attribute__slug'), 
+				name=F('prod_attribute__name')
+			).distinct()
+		attribute_values = Product.objs.valid().company(self.request.company.id).\
+			filter(slug=product.slug).\
+			values(
+				attr_slug=F('attribute_values__product_attribute__slug'),
+				val=F('attribute_values__value'),
+				name=F('attribute_values__name')
+			).distinct()
+		context['attributes'] = attributes
+		context['attribute_values'] = attribute_values
 		return context

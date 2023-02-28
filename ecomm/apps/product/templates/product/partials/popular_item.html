@@ -4,11 +4,11 @@
 
 <div class="col-md-3">
 	<div class="card card-product-grid">
-		<a href="./product-detail.html" class="img-wrap">
+		<a href="{% url 'company:product' company.alias item.cat_slug item.slug %}" class="img-wrap">
 			<img src="{{ item.thumb|url_or_default }}">
 		</a>
 		<figcaption class="info-wrap">
-			<a href="./product-detail.html" class="title">
+			<a href="{% url 'company:product' company.alias item.cat_slug item.slug %}" class="title">
 				{{ item.prod_base.name|in_lang_or_default }}
 			</a>
 			<div class="price mt-1">{{ item.price }}</div>

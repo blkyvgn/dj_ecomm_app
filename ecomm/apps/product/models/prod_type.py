@@ -41,7 +41,7 @@ class ProductType(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	name = models.JSONField()
 	category = models.ForeignKey(
 		'category.Category',
-		related_name='types',
+		related_name='prod_types',
 		on_delete=models.SET_NULL,
 		null=True,
 		blank=True,
