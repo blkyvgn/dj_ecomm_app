@@ -1,5 +1,5 @@
 from django.conf import settings
-from ecomm.vendors.base.view import BaseTemplateView, BaseDetailView
+from ecomm.vendors.base.view import BaseDetailView
 from ecomm.vendors.helpers.pagination import paginator
 from ecomm.apps.category.models import Category
 from django.db.models import Prefetch

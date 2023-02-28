@@ -4,12 +4,12 @@ from ecomm.apps.product.models import Product
 
 
 
-class Comparison:
+class Compare:
 	def __init__(self, request):
 		self.session = request.session
 		compare = self.session.get('compare')
 		if 'compare' not in request.session:
-			compare_prod_ids = request.user.get_comparison() if request.user.is_authenticated else []
+			compare_prod_ids = request.user.get_compare() if request.user.is_authenticated else []
 			compare = self.session['compare'] = compare_prod_ids
 		self.compare = compare
 

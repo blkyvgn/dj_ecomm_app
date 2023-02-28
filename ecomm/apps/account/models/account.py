@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from ecomm.vendors.base.model import BaseModel
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
@@ -59,6 +60,15 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 		default=True
 	)
 
+	wish = models.JSONField(
+		null=True, 
+		blank=True,
+	)
+	compare = models.JSONField(
+		null=True, 
+		blank=True,
+	)
+
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = []
 
@@ -87,6 +97,49 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 	@type.setter
 	def type(self, val):
 		self._type = val
+
+	@classmethod
+	def get_by_uid(cls, uidb64):
+		try:
+			uid = force_str(urlsafe_base64_decode(uidb64)) 
+			user = cls.objs.get(pk=uid)
+		except(TypeError, ValueError, OverflowError, user.DoesNotExist):
+			user = None
+		return user
+
+	def get_wish(self, alias=settings.COMPANY_ALIAS):
+		try:
+			return self.wish[alias]
+		except:
+			return []
+
+	def get_compare(self, alias=settings.COMPANY_ALIAS):
+		try:
+			return self.comparison[alias]
+		except:
+			return []
+
+	def update_wish(self, prod_id, key='add', alias=settings.COMPANY_ALIAS):
+		if key == 'add':
+			if self.wish:
+				self.wish.append(str(prod_id))
+			else:
+				self.wish = [str(prod_id)]
+		elif key == 'remove':
+			if self.wish:
+				self.wish.remove(str(prod_id))
+		self.save(update_fields=['wish'])
+
+	def update_compare(self, prod_id, key='add', alias=settings.COMPANY_ALIAS):
+		if key == 'add':
+			if self.comparison:
+				self.comparison.append(str(prod_id))
+			else:
+				self.comparison = [str(prod_id)]
+		elif key == 'remove':
+			if self.comparison:
+				self.comparison.remove(str(prod_id))
+		self.save(update_fields=['comparison'])
 	
 
 

@@ -75,11 +75,23 @@
 								<a href="./register.html"> Register</a>
 							</div>
 						</div>
-						<a href="./cart.html" class="widget-header pl-3 ml-3">
+						<a href="{% url 'company:cart' company.alias %}" 
+							class="widget-header pl-3 ml-3">
 							<div class="icon icon-sm rounded-circle border">
 								<i class="fa fa-shopping-cart"></i>
 							</div>
-							<span class="badge badge-pill badge-danger notify">0</span>
+							<div id="cart-counter" 
+								class="{% with total_qty=cart|length %}{% if total_qty == 0 %}
+									hidden
+								{% endif %}{% endwith %}">
+								<span class="badge badge-pill badge-danger notify">
+									{% with total_qty=cart|length %}
+				                        {% if total_qty > 0 %}
+				                            {{ total_qty }}
+				                        {% endif %}
+				                    {% endwith %} 
+								</span>
+							</div>
 						</a>
 					</div>
 				</div>

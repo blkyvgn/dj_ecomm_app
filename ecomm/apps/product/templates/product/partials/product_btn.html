@@ -1,0 +1,26 @@
+{% load static %}
+{% load i18n %}
+{% load helpers %}
+
+{% if item.units %}
+	{% cart_product_qty cart item.id as item_quantity %}
+	<button type="button" class="btn 
+		{% if item.id in cart.get_product_ids %}
+			btn-success
+		{% else %}
+			btn-primary
+		{% endif %} w-100"
+		onclick="cart.select()" 
+        data-prodid="{{ item.id }}" 
+        data-quantity="{{ item_quantity|default_if_none:'' }}"
+    >
+    	<span id="item-not-in-cart" class="{% if item.id in cart.get_product_ids %}d-none{% endif %}">
+    		Add to cart
+    	</span>
+    	<span id="item-in-cart" class="{% if item.id not in cart.get_product_ids %}d-none{% endif %}">
+    		Added to cart
+    	</span>
+    </button>
+{% else %} 
+	<button type="button" class="btn btn-secondary w-100">Not available</button>
+{% endif %}

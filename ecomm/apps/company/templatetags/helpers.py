@@ -21,6 +21,14 @@ def url_or_default(img, key=settings.DEFAULT_IMAGE_KEY):
         url = static(settings.DEFAULT_IMAGE[key])
     return url
 
+@register.filter(name='or_default_img')
+def or_default_img(value, key=settings.DEFAULT_IMAGE_KEY):
+    if value:
+        url = f'{settings.MEDIA_URL}{value}'
+    else:
+        url = static(settings.DEFAULT_IMAGE[key])
+    return url
+
 @register.simple_tag
 def settings_value(key):
     return getattr(settings, key, '')
@@ -48,3 +56,7 @@ def slice_page_range(val, page_number, by_number=settings.NUMBER_PAGINATIONS):
             first = last - full_number
         res = list(val.page_range)[first:last] 
         return res
+
+@register.simple_tag
+def cart_product_qty(cart, item_id):
+    return cart.get_product_quantity(item_id)

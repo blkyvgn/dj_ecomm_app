@@ -21,14 +21,7 @@
 					{% endif %}
 				</div>
 			</div>
-			<a href="#" class="btn btn-block btn-primary">Add to cart</a>
-			{% comment %}
-			{% if item.units %}
-				<a href="#" class="btn btn-block btn-primary">Add to cart</a>
-			{% else %} 
-				<button type="button" class="btn btn-secondary">Not available</button>
-			{% endif %}
-			{% endcomment %}
+			{% include 'product/partials/product_btn.html' %}
 		</figcaption>
 	</figure>
 </div>

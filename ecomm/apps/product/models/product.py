@@ -243,6 +243,7 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 		return cls.objs.valid().company(company_id).\
 			select_related('prod_base').\
 			annotate(
+				units=F('stock_prod__units'),
 				sold=F('stock_prod__units_sold'),
 				cat_slug=F('prod_base__category__slug'),
 			).\
@@ -254,6 +255,7 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 		'prod_base__name', 
 		'thumb', 
 		'ext_name', 
+		'brand__name',
 		'price', 
 		'sale_price',
 	]

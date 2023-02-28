@@ -1,6 +1,6 @@
 from decimal import Decimal
 from django.utils.translation import get_language
-from ecomm.apps.fnd.models import Product
+from ecomm.apps.product.models import Product
 
 
 

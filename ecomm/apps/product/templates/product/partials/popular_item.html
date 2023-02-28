@@ -12,6 +12,8 @@
 				{{ item.prod_base.name|in_lang_or_default }}
 			</a>
 			<div class="price mt-1">{{ item.price }}</div>
+			{% include 'product/partials/product_btn.html' %}
 		</figcaption>
+		
 	</div>
 </div>
