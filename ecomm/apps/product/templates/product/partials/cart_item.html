@@ -32,7 +32,7 @@
 					<input id="prod-quantity-{{ item.id }}"
                         data-prodid="{{ item.id }}" 
                         data-quantity="{{ prod_quantity|default_if_none:'' }}"
-						type="text" class="form-control"  value="1">
+						type="text" class="form-control"  value="{{ prod_quantity|default_if_none:'' }}">
 					<div class="input-group-append">
 					<button onclick="cart.increment()" data-prodid="{{ item.id }}"
 						class="btn btn-light" type="button" id="button-minus"> 

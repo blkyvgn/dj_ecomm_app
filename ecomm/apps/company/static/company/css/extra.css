@@ -51,6 +51,13 @@ body {
   line-height: var(--base-line-height);
   font-weight: var(--font-weight-common);
 }
+button span {
+  pointer-events: none;
+}
+button i {
+  pointer-events: none;
+}
+
 .pointer {
   cursor: pointer;
 }
@@ -59,4 +66,127 @@ body {
 }
 .invisibile {
   visibility: hidden;
+}
+.badge.top-right {
+  top: -5px;
+  right: -5px;
+  left: initial;
+}
+#cart-icon {
+  top: 26%;
+  right: 26%;
+}
+
+/* =========================================================================================== */
+/* -------------------------------------- animatioms ----------------------------------------- */
+/* =========================================================================================== */
+.wish {
+  animation: 0.2s ease-in forwards wish;
+}
+.unwish {
+  animation: 0.2s ease-in forwards unwish;
+}
+
+@keyframes wish {
+  0% {
+    fill: transparent;
+    transform: scale(1.0, 1.0);
+  }
+  50% {
+    transform: scale(0.9, 0.9);
+  }
+  100% {
+    fill: var(--wish-color);
+    transform: scale(1.0, 1.0);
+  }
+}
+@keyframes unwish {
+  0% {
+    fill: var(--wish-color);
+    transform: scale(1.0, 1.0);
+  }
+  50% {
+    transform: scale(0.9, 0.9);
+  }
+  100% {
+    fill: transparent;
+    transform: scale(1.0, 1.0);
+  }
+}
+.wished_scale {
+  animation: 0.2s ease-in forwards wished_scale;
+}
+@keyframes wished_scale {
+  0% {
+    transform: scale(1.0, 1.0);
+  }
+  50% {
+    transform: scale(0.9, 0.9);
+  }
+  100% {
+    transform: scale(1.0, 1.0);
+  }
+}
+
+.compare {
+  animation: 0.2s ease-in forwards compare;
+}
+.uncompare {
+  animation: 0.2s ease-in forwards uncompare;
+}
+
+@keyframes compare {
+  0% {
+    fill: transparent;
+    transform: scale(1.0, 1.0);
+  }
+  50% {
+    transform: scale(0.9, 0.9);
+  }
+  100% {
+    fill: var(--compare-color);
+    transform: scale(1.0, 1.0);
+  }
+}
+@keyframes uncompare {
+  0% {
+    fill: var(--compare-color);
+    transform: scale(1.0, 1.0);
+  }
+  50% {
+    transform: scale(0.9, 0.9);
+  }
+  100% {
+    fill: transparent;
+    transform: scale(1.0, 1.0);
+  }
+}
+
+.compared_scale {
+  animation: 0.2s ease-in forwards compared_scale;
+}
+@keyframes compared_scale {
+  0% {
+    transform: scale(1.0, 1.0);
+  }
+  50% {
+    transform: scale(0.9, 0.9);
+  }
+  100% {
+    transform: scale(1.0, 1.0);
+  }
+}
+.box_scale {
+  animation: 0.2s ease-in forwards box_scale;
+}
+@keyframes box_scale {
+  0% {
+    transform: scale(1.0, 1.0);
+  }
+  50% {
+    transform: scale(0.8, 0.8);
+  }
+  100% {
+    transform: scale(1.0, 1.0);
+  }
 }

@@ -174,8 +174,6 @@ class FetchDataException extends Error {
 }
 
 async function fetchAsync(method, url, data) {
-    console.log(data);
-    console.log(JSON.stringify(data));
     const requestOptions = {
         method: method,
         headers: { 
@@ -321,7 +319,6 @@ class CartMamager {
                 }
             });
         }
-        console.log(this.addUrl);
     }
     getProdId(el) {
         if (el.hasAttribute('data-prodid') && (parseIntOrZero(el.dataset.prodid) != 0)) {
@@ -345,8 +342,8 @@ class CartMamager {
             el.classList.remove('btn-primary');
             el.classList.add('btn-success');
 
-            el.querySelector('span:nth-child(1)').classList.toggle('d-none');
-            el.querySelector('span:nth-child(2)').classList.toggle('d-none');
+            el.querySelector('span:nth-child(1)').classList.toggle('hidden');
+            el.querySelector('span:nth-child(2)').classList.toggle('hidden');
         }
     }
     setBoxTotalCount(res) {
@@ -386,15 +383,15 @@ class CartMamager {
         if (isExist(this.boxElem)) {
             let count = res['quantity'];
             if(count > 0) {
-                if (!this.boxElem.classList.contains('selected')) {
-                    this.boxElem.classList.add('selected');
+                if (!this.boxElem.classList.contains('text-success')) {
+                    this.boxElem.classList.add('text-success');
                     this.boxElem.classList.add('box_scale');
                 } else {
                     this.boxElem.classList.add('box_scale');
                 }
             }
-            if(count == 0 && this.boxElem.classList.contains('selected')) {
-                this.boxElem.classList.remove('selected');
+            if(count == 0 && this.boxElem.classList.contains('text-success')) {
+                this.boxElem.classList.remove('text-success');
                 this.boxElem.classList.add('box_scale');
             }
         }
@@ -527,7 +524,7 @@ const cart = new CartMamager({
     updateUrl: '/shop/cart/update/',
     deleteUrl: '/shop/cart/delete/',
     deliveryUpdateUrl: '/checkout/update-delivery/',
-    boxSelector: '#box-fix svg',
+    boxSelector: '#cart-icon', // '#box-fix svg',
     boxCountSelector: '#cart-counter span',
     cartCountSelector: '#cart-quantity',
     cartTotalSelector: '#cart-total',

@@ -4,7 +4,7 @@
 
 {% if item.units %}
 	{% cart_product_qty cart item.id as item_quantity %}
-	<button type="button" class="btn 
+	<button type="button" class="position-relative btn 
 		{% if item.id in cart.get_product_ids %}
 			btn-success
 		{% else %}
@@ -14,12 +14,16 @@
         data-prodid="{{ item.id }}" 
         data-quantity="{{ item_quantity|default_if_none:'' }}"
     >
-    	<span id="item-not-in-cart" class="{% if item.id in cart.get_product_ids %}d-none{% endif %}">
-    		Add to cart
-    	</span>
-    	<span id="item-in-cart" class="{% if item.id not in cart.get_product_ids %}d-none{% endif %}">
-    		Added to cart
-    	</span>
+	    	<span id="item-not-in-cart" class="{% if item.id in cart.get_product_ids %}hidden{% endif %}">
+	    		Add to cart
+	    	</span>
+	    	<span id="item-in-cart" class="{% if item.id not in cart.get_product_ids %}hidden{% endif %}">
+	    		Added to cart
+	    	</span>
+		<span class="position-absolute badge rounded-pill bg-success top-right
+		{% if item.id not in cart.get_product_ids %}hidden{% endif %}">
+			<small>{{ item_quantity }}</small>
+		</span>
     </button>
 {% else %} 
 	<button type="button" class="btn btn-secondary w-100">Not available</button>
