@@ -1,19 +1,26 @@
 {% load i18n %}
 {% load helpers %}
-<tr id="cart-prod-{{ item.id }}">
+
+<tr id="cart-prod-{{ item.product.id }}">
 	<td>
 		<figure class="itemside align-items-center">
-			<div class="aside"><img src="{{ item.thumb|or_default_img }}" class="img-sm"></div>
+			<div class="aside"><img src="{{ item.product.thumb|or_default_img }}" class="img-sm"></div>
 			<figcaption class="info">
-				<a href="#" class="title text-dark">
-					{{ item.prod_base__name|in_lang_or_default }}
+				<a 
+					href="{% url 'company:product' company.alias item.product.prod_base__category__slug item.product.slug %}" 
+					class="title text-dark"
+				>
+                    {{ item.product.prod_base__name|in_lang_or_default }}
 					<small>
-                        {% if item.ext_name %}
-                            ({{ item.name_ext|in_lang_or_default }})
-                        {% endif %}
-                    </small>
+	                    {% if item.product.ext_name %}
+	                        ({{ item.product.ext_name|in_lang_or_default }})
+	                    {% endif %}
+	                </small>
 				</a>
-				<p class="text-muted small">Matrix: 25 Mpx <br>{{ item.brand__name|in_lang_or_default }}</p>
+				<p class="text-muted small">
+					<br>
+					{% translate "Brand" %}: {{ item.product.brand__name|in_lang_or_default }}
+				</p>
 			</figcaption>
 		</figure>
 	</td>
@@ -22,19 +29,20 @@
 		<div class="col"> 
 			<div class="input-group input-spinner">
 				<div class="input-group-prepend">
-					{% cart_product_qty cart item.id as prod_quantity %}
-					<button onclick="cart.decrement()" data-prodid="{{ item.id }}"
+					{% cart_product_qty cart item.product.id as prod_quantity %}
+					<button onclick="cart.decrement()" data-prodid="{{ item.product.id }}"
 						class="btn btn-light" type="button" id="button-plus"> 
 						<i class="fa fa-minus"></i> 
 					</button>
 					</div>
-					<input id="prod-total-{{ prod.id }}" type="hidden" name="prod-total">
-					<input id="prod-quantity-{{ item.id }}"
-                        data-prodid="{{ item.id }}" 
+					<input id="prod-quantity-{{ item.product.id }}" type="text" class="form-control" 
+                        data-prodid="{{ item.product.id }}" 
                         data-quantity="{{ prod_quantity|default_if_none:'' }}"
-						type="text" class="form-control"  value="{{ prod_quantity|default_if_none:'' }}">
+                        data-handlers="keydown:onlyDigital|keyup:notZero|input:changeProdQty"
+						value="{{ prod_quantity|default_if_none:'' }}">
+
 					<div class="input-group-append">
-					<button onclick="cart.increment()" data-prodid="{{ item.id }}"
+					<button onclick="cart.increment()" data-prodid="{{ item.product.id }}"
 						class="btn btn-light" type="button" id="button-minus"> 
 						<i class="fa fa-plus"></i> 
 					</button>
@@ -44,13 +52,19 @@
 	</td>
 	<td> 
 		<div class="price-wrap"> 
-			<var class="price">{{ item.total_price }}</var> 
-			<small class="text-muted">{{ item.price }} each </small> 
+			<var id="prod-total-{{ item.product.id }}" class="price">{{ item.total_price }}</var> 
+			<small class="text-muted">
+				{% if item.product.sale_price %} 
+					{{ item.product.sale_price }} {% translate "each" %}
+				{% else %} 
+					{{ item.product.price }} {% translate "each" %}
+				{% endif %}
+			</small> 
 		</div> <!-- price-wrap .// -->
 	</td>
 	<td class="text-right"> 
 	<button type="button" class="btn btn-danger" 
-        onclick="cart.remove()" data-prodid="{{ prod.id }}"
+        onclick="cart.remove()" data-prodid="{{ item.product.id }}"
     >
         {% translate "Remove" %}
     </button>

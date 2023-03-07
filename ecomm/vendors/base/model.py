@@ -19,12 +19,21 @@ class BaseQuerySet(models.QuerySet):
 		return self.filter(company_id=cmp_id)
 
 	def filter_by_params(self, _or=False, **kwargs):
+		''' kwargs as key:value or key:[list_of_values] '''
 		if kwargs:
 			_q = Q()
 			conn = Q.AND if not _or else Q.OR
 			for key, val in kwargs.items():
-				filter_dict = {key: val}
-				_q.add(Q(**filter_dict), conn)
+				if isinstance(val, list) or isinstance(val, set) or isinstance(val, tuple):
+					if len(val):
+						if key.endswith('__in'):
+							_q.add(Q(**{key: val}), conn)
+						else:
+							for v in val:
+								_q.add(Q(**{key: v}), conn)
+				else:
+					if val is not None:
+						_q.add(Q(**{key: val}), conn)
 			return self.filter(_q)
 		else:
 			return self

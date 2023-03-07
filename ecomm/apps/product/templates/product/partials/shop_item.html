@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load helpers %}
 
-<div class="col-md-4">
+<div class="col-md-3">
 	<figure class="card card-product-grid">
 		<div class="img-wrap"> 
 			<img src="{{ item.thumb|url_or_default }}">
@@ -10,7 +10,7 @@
 		<figcaption class="info-wrap">
 			<div class="fix-height">
 				<a href="{% url 'company:product' company.alias item.cat_slug item.slug %}" class="title">
-					{{ item.prod_base.name|in_lang_or_default }}
+	                {% include 'product/partials/product_name.html' %}
 				</a>
 				<div class="price-wrap mt-2">
 					{% if item.sale_price %} 
@@ -21,7 +21,7 @@
 					{% endif %}
 				</div>
 			</div>
-			{% include 'product/partials/product_btn.html' %}
+			{% include 'product/partials/product_btn.html' with w_full=True %}
 		</figcaption>
 	</figure>
 </div>

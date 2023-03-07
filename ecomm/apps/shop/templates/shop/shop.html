@@ -1,14 +1,14 @@
 <section class="section-content padding-y">
     <div class="container">
         <div class="row">
-	        <!-- <aside class="col-md-3">
-	            <div class="card">
-	            	{% comment %}
-	            		{% include 'shop/partials/filters.html' with cat_items=categories %}
-	            	{% endcomment %}
-	            </div>
-	        </aside> -->
-	        <main> <!-- class="col-md-9" -->
+	        <aside class="col-md-3">
+                <div class="card">
+                    {% include 'category/partials/list.html' with cat_items=categories %}
+                    {% include 'product/partials/filter_price.html' %}
+                    {% include 'product/partials/filter_attrs.html' %}
+                </div>
+            </aside>
+            <main class="col-md-9">
 	            <header class="border-bottom mb-4 pb-3">
 	                <div class="form-inline">
 	                    <span class="mr-md-auto">{{ products.paginator.count }} Items found </span>
@@ -25,6 +25,14 @@
 </section>
 
 <!-- ========================= SECTION CONTENT ========================= -->
+<!-- <aside class="col-md-3">
+	            <div class="card">
+	            	{% comment %}
+	            		{% include 'shop/partials/filters.html' with cat_items=categories %}
+	            	{% endcomment %}
+	            </div>
+	        </aside> -->
+
 <!-- <section class="section-content padding-y">
 <div class="container">
 <div class="row">

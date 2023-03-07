@@ -1,15 +1,20 @@
+{% load static %} 
+{% load i18n %}
+
 <section class="section-content padding-y">
     <div class="container">
         <div class="row">
             <aside class="col-md-3">
                 <div class="card">
-                    {% include 'shop/partials/filters.html' with cat_items=category.get_children %}
+                    {% include 'category/partials/list.html' with cat_items=category.get_children %}
+                    {% include 'product/partials/filter_price.html' %}
+                    {% include 'product/partials/filter_attrs.html' %}
                 </div>
             </aside>
             <main class="col-md-9">
                 <header class="border-bottom mb-4 pb-3">
                     <div class="form-inline">
-                        <span class="mr-md-auto">{{ products.paginator.count }} Items found </span>
+                        <span class="mr-md-auto">{{ products.paginator.count }} {% translate "Items found" %}</span>
                     </div>
                 </header>
                 <div class="row">

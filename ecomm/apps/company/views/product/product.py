@@ -1,11 +1,14 @@
 from django.conf import settings
 from ecomm.vendors.base.view import BaseTemplateView, BaseDetailView
 from ecomm.vendors.helpers.pagination import paginator
+from django.utils.translation import get_language
 from ecomm.apps.category.models import Category
+from django.db.models import Prefetch
 from ecomm.apps.product.models import (
 	Product,
 	ProductType,
 	ProductTypeAttribute,
+	ProductBaseTranslation,
 )
 from django.http import Http404
 from django.db.models import F
@@ -22,6 +25,11 @@ class ProdictView(BaseDetailView):
 		product = self.model.objs.valid().company(self.request.company.id).\
 			prefetch_related('media').\
 			select_related('prod_base').\
+			select_related('brand').\
+			annotate(
+				units=F('stock_prod__units'),
+				cat_slug=F('prod_base__category__slug'),
+			).\
 			filter(slug=prod_slug).first()
 		if product is None:
 			Http404('Not found product %(slug)s' % {'slug': prod_slug})
@@ -44,4 +52,11 @@ class ProdictView(BaseDetailView):
 			).distinct()
 		context['attributes'] = attributes
 		context['attribute_values'] = attribute_values
+
+		prod_translation = ProductBaseTranslation.objects.filter(
+			prod_base=product.prod_base, 
+			lang=get_language()
+		).first()
+		setattr(product, 'translate', prod_translation)
+
 		return context

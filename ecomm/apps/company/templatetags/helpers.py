@@ -9,6 +9,7 @@ register = template.Library()
 def in_lang_or_default(val, lang_key=get_language()):
     try:
         res = val.get(lang_key, val.get(settings.LANGUAGE_CODE))
+        # res = val.get(lang_key, None)
     except:
         res = None
     return res

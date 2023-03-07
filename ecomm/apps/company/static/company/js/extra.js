@@ -40,6 +40,9 @@ const currentLocation = (expr='hostname') => {
         case 'params':
             location = window.location.href.split('?')[1]
             break;
+        case 'search':
+            location = window.location.search
+            break;
         default:
             location = window.location.href
     }
@@ -181,7 +184,7 @@ async function fetchAsync(method, url, data) {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrftoken,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
     };
     try {
         const response = await fetch(url, requestOptions);
@@ -305,6 +308,7 @@ class CartMamager {
         this.boxCountElem = document.querySelector(options.boxCountSelector);
         this.boxCount = parseIntOrZero(getInnerHtml(options.boxCountSelector));
         this.deliveryElem = document.querySelector(options.deliverySelector);
+        this.cartBoxElem = document.querySelector(options.cartBoxSelector);
         this.quantityKeySelector = options.quantityKeySelector;
         this.totalPriceProdKeySelector = options.totalPriceProdKeySelector;
         this.prodKeySelector = options.prodKeySelector;
@@ -404,6 +408,13 @@ class CartMamager {
             itemProdCountElem.hiddenParentByСondition(qty > 0);
         }
     }
+    hiddenCartBox(res) {
+        if (res['quantity'] == 0) {
+            this.cartBoxElem.classList.add('hidden');
+            const emptyCartElem = document.querySelector(`#${this.cartBoxElem.id}-empty`);
+            emptyCartElem.classList.remove('hidden');
+        }
+    }
     selectProduct(el, res) {
         this.setPordQuantity(el, 1);
         this.setProdBtnCount(el);
@@ -433,6 +444,7 @@ class CartMamager {
         this.setBoxElemAnimation(res);
         let prodDel = document.querySelector(`#${this.prodKeySelector}${prodId}`);
         prodDel.remove();
+        this.hiddenCartBox(res);
     }
     selectDelivery(res) {
         this.deliveryElem.innerHTML = res['delivery_price']
@@ -530,331 +542,336 @@ const cart = new CartMamager({
     cartTotalSelector: '#cart-total',
     cartSubtotalSelector: '#cart-subtotal',
     deliverySelector: '#cart-delivery',
+    cartBoxSelector: '#cart-table',
     totalPriceProdKeySelector: 'prod-total-',
     quantityKeySelector: 'prod-quantity-',
     prodKeySelector: 'cart-prod-',
 })
 
-// class WishMamager {
-//     constructor(options) {
-//         this.addUrl = options.addUrl;
-//         this.deleteUrl = options.deleteUrl;
-//         this.wishElem = document.querySelector(options.wishSelector);
-//         this.wishCountElem = document.querySelector(options.wishCountSelector);
-//         this.wishCount = parseIntOrZero(getInnerHtml(options.wishCountSelector));
-//         this.wishes = [];
-//         this.setup();
-//     }
-//     setup() {
-//         this.wishElem.addEventListener('animationend', (ev) => {
-//             if (ev.animationName == "wished_scale") {
-//                 this.wishElem.classList.remove('wished_scale');
-//             }
-//         });
-//     }
-//     getProdId(el) {
-//         if (el.hasAttribute('data-prodid') && (parseIntOrZero(el.dataset.prodid) != 0)) {
-//             return el.dataset.prodid;
-//         }
-//         return null;
-//     }
-//     setWishCount(count) {
-//         this.wishCountElem.innerHTML = (count == 0 )? '' : count;
-//         this.wishCountElem.hiddenParentByСondition(count > 0);
-//     } 
-//     setWishElemColor(count) {
-//         if(count > 0) {
-//             if (!this.wishElem.classList.contains('wished')) {
-//                 this.wishElem.classList.add('wished');
-//                 this.wishElem.classList.add('wished_scale');
-//             } else {
-//                 this.wishElem.classList.add('wished_scale');
-//             }
-//         }
-//         if(count == 0 && this.wishElem.classList.contains('wished')) {
-//             this.wishElem.classList.remove('wished');
-//             this.wishElem.classList.add('wished_scale');
-//         }
-//     }
-//     selectProduct(el, res) {
-//         let itemSvgElem = el.querySelector('svg');
-//         itemSvgElem.classList.remove('unwish');
-//         itemSvgElem.classList.add('wish');
-//         this.setWishCount(res['quantity']);
-//         this.setWishElemColor(res['quantity']);
-//     }
-//     deselectProduct(el, res) {
-//         let itemSvgElem = el.querySelector('svg');
-//         itemSvgElem.classList.remove('wished');
-//         itemSvgElem.classList.remove('wish');
-//         itemSvgElem.classList.add('unwish');
-//         this.setWishCount(res['quantity']);
-//         this.setWishElemColor(res['quantity']);
-//     }
-//     increment(el) {
-//         let prodId = this.getProdId(el);
-//         if (prodId !== null) {
-//             this.add(el, prodId);
-//         }
-//     }
-//     decrement(el) {
-//         let prodId = this.getProdId(el);
-//         if (prodId !== null) {
-//             this.delete(el, prodId);
-//         }
-//     }
-//     add(el, prodId) {
-//         const data = {
-//             id: prodId,
-//         }
-//         fetchAsync('POST', this.addUrl, data)
-//             .then(res => {
-//                 this.selectProduct(el, res);
-//             })
-//     }
-//     delete(el, prodId) {
-//         const data = {
-//             id: prodId,
-//         }
-//         fetchAsync('POST', this.deleteUrl, data)
-//             .then(res => {
-//                 this.deselectProduct(el, res);
-//             })
-//     }
-//     setWishBy(el) {
-//         let itemSvgElem = el.querySelector('svg');
-//         if(!itemSvgElem.classList.contains('wish') && !itemSvgElem.classList.contains('wished')) {
-//             this.increment(el);
-//         } else {
-//             this.decrement(el);
-//         }
-//     }
-//     toggle() {
-//         const el = event.target;
-//         this.setWishBy(el);
-//     }
-// }
-// class CompareMamager {
-//     constructor(options) {
-//         this.addUrl = options.addUrl;
-//         this.deleteUrl = options.deleteUrl;
-//         this.compareElem = document.querySelector(options.compareSelector);
-//         this.compareCountElem = document.querySelector(options.compareCountSelector);
-//         this.compareCount = parseIntOrZero(getInnerHtml(options.compareCountSelector));
-//         this.compares = [];
-//         this.setup();
-//     }
-//     setup() {
-//         this.compareElem.addEventListener('animationend', (ev) => {
-//             if (ev.animationName == "compared_scale") {
-//                 this.compareElem.classList.remove('compared_scale');
-//             }
-//         });
-//     }
-//     getProdId(el) {
-//         if (el.hasAttribute('data-prodid') && (parseIntOrZero(el.dataset.prodid) != 0)) {
-//             return el.dataset.prodid;
-//         }
-//         return null;
-//     }
-//     setCompareCount(count) {
-//         this.compareCountElem.innerHTML = (count == 0)? '' : count;
-//         this.compareCountElem.hiddenParentByСondition(count > 0);
-//     }
-//     setCompareElemColor(count) {
-//         if(count > 0) {
-//             if (!this.compareElem.classList.contains('compared')) {
-//                 this.compareElem.classList.add('compared');
-//                 this.compareElem.classList.add('compared_scale');
-//             } else {
-//                 this.compareElem.classList.add('compared_scale');
-//             }
-//         }
-//         if(count == 0 && this.compareElem.classList.contains('compared')) {
-//             this.compareElem.classList.remove('compared');
-//             this.compareElem.classList.add('compared_scale');
-//         }
-//     }
-//     selectProduct(el, res) {
-//         let itemSvgElem = el.querySelector('svg');
-//         itemSvgElem.classList.remove('uncompare');
-//         itemSvgElem.classList.add('compare');
-//         this.setCompareCount(res['quantity']);
-//         this.setCompareElemColor(res['quantity']);
-//     }
-//     deselectProduct(el, res) {
-//         let itemSvgElem = el.querySelector('svg');
-//         itemSvgElem.classList.remove('compared');
-//         itemSvgElem.classList.remove('compare');
-//         itemSvgElem.classList.add('uncompare');
-//         this.setCompareCount(res['quantity']);
-//         this.setCompareElemColor(res['quantity']);
-//     }
-//     increment(el) {
-//         let prodId = this.getProdId(el);
-//         if (prodId !== null) {
-//             this.add(el, prodId);
-//         }
-//     }
-//     decrement(el) {
-//         let prodId = this.getProdId(el);
-//         if (prodId !== null) {
-//             this.delete(el, prodId);
-//         }
-//     }
-//     add(el, prodId) {
-//         const data = {
-//             id: prodId,
-//         }
-//         fetchAsync('POST', this.addUrl, data)
-//             .then(res => {
-//                 this.selectProduct(el, res);
-//             })
-//     }
-//     delete(el, prodId) {
-//         const data = {
-//             id: prodId,
-//         }
-//         fetchAsync('POST', this.deleteUrl, data)
-//             .then(res => {
-//                 this.deselectProduct(el, res);
-//             })
-//     }
-//     setCompareBy(el) {
-//         let itemSvgElem = el.querySelector('svg');
-//         if(!itemSvgElem.classList.contains('compare') && !itemSvgElem.classList.contains('compared')) {
-//             this.increment(el);
-//         } else {
-//             this.decrement(el);
-//         }
-//     }
-//     toggle() {
-//         const el = event.target;
-//         this.setCompareBy(el);
-//     }
-// }
+class WishMamager {
+    constructor(options) {
+        this.addUrl = currentCompanyAlias()+options.addUrl;
+        this.deleteUrl = currentCompanyAlias()+options.deleteUrl;
+        this.wishElem = document.querySelector(options.wishSelector);
+        this.wishCountElem = document.querySelector(options.wishCountSelector);
+        this.wishCount = parseIntOrZero(getInnerHtml(options.wishCountSelector));
+        // this.wishes = [];
+        this.setup();
+    }
+    setup() {
+        if (isExist(this.wishElem)) {
+            this.wishElem.addEventListener('animationend', (ev) => {
+                if (ev.animationName == 'wished_scale') {
+                    this.wishElem.classList.remove('wished_scale');
+                }
+            });
+        }
+    }
+    getProdId(el) {
+        if (el.hasAttribute('data-prodid') && (parseIntOrZero(el.dataset.prodid) != 0)) {
+            return el.dataset.prodid;
+        }
+        return null;
+    }
+    setWishCount(count) {
+        this.wishCountElem.innerHTML = (count == 0 )? '' : count;
+        this.wishCountElem.hiddenParentByСondition(count > 0);
+    } 
+    setWishElemColor(count) {
+        if(count > 0) {
+            if (!this.wishElem.classList.contains('wished')) {
+                this.wishElem.classList.add('wished');
+                this.wishElem.classList.add('wished_scale');
+            } else {
+                this.wishElem.classList.add('wished_scale');
+            }
+        }
+        if(count == 0 && this.wishElem.classList.contains('wished')) {
+            this.wishElem.classList.remove('wished');
+            this.wishElem.classList.add('wished_scale');
+        }
+    }
+    selectProduct(el, res) {
+        let itemSvgElem = el.querySelector('i');
+        itemSvgElem.classList.remove('unwish');
+        itemSvgElem.classList.add('wish');
+        this.setWishCount(res['quantity']);
+        this.setWishElemColor(res['quantity']);
+    }
+    deselectProduct(el, res) {
+        let itemSvgElem = el.querySelector('i');
+        itemSvgElem.classList.remove('wished');
+        itemSvgElem.classList.remove('wish');
+        itemSvgElem.classList.add('unwish');
+        this.setWishCount(res['quantity']);
+        this.setWishElemColor(res['quantity']);
+    }
+    increment(el) {
+        let prodId = this.getProdId(el);
+        if (prodId !== null) {
+            this.add(el, prodId);
+        }
+    }
+    decrement(el) {
+        let prodId = this.getProdId(el);
+        if (prodId !== null) {
+            this.delete(el, prodId);
+        }
+    }
+    add(el, prodId) {
+        const data = {
+            id: prodId,
+        }
+        fetchAsync('POST', this.addUrl, data)
+            .then(res => {
+                this.selectProduct(el, res);
+            })
+    }
+    delete(el, prodId) {
+        const data = {
+            id: prodId,
+        }
+        fetchAsync('POST', this.deleteUrl, data)
+            .then(res => {
+                this.deselectProduct(el, res);
+            })
+    }
+    setWishBy(el) {
+        let itemSvgElem = el.querySelector('i');
+        if(!itemSvgElem.classList.contains('wish') && !itemSvgElem.classList.contains('wished')) {
+            this.increment(el);
+        } else {
+            this.decrement(el);
+        }
+    }
+    toggle() {
+        const el = event.target;
+        this.setWishBy(el);
+    }
+}
+const wish = new WishMamager({
+    addUrl: '/shop/wish/add/',
+    deleteUrl: '/shop/wish/delete/',
+    wishSelector: '#wish-total i',
+    wishCountSelector: '#wish-counter span',
+})
 
-// class InputWatcher {
-//     constructor(options) {
-//         this.obserEvent = options.obserEvent;
-//         this.obserElements = document.querySelectorAll(options.obserElementsSelector);
-//         this.handler = options.handler;
-//         this.setup();
-//     }
-//     setup() {
-//         this.obserElements.forEach((el) => {
-//             el.addEventListener(this.obserEvent, this.checkEvent);
-//         });
-//     }
-//     checkEvent = () => {
-//         let tmpCounter = 0;
-//         this.obserElements.forEach((el) => {
-//             let value = el.value.trim();
-//             if (value != '') {
-//                 tmpCounter += 1;
-//             }
-//         });
-//         this.handler(this.obserElements.length == tmpCounter)
-//     }   
-// }
+class CompareMamager {
+    constructor(options) {
+        this.addUrl = currentCompanyAlias()+options.addUrl;
+        this.deleteUrl = currentCompanyAlias()+options.deleteUrl;
+        this.compareElem = document.querySelector(options.compareSelector);
+        this.compareCountElem = document.querySelector(options.compareCountSelector);
+        this.compareCount = parseIntOrZero(getInnerHtml(options.compareCountSelector));
+        // this.compares = [];
+        this.setup();
+    }
+    setup() {
+        if (isExist(this.compareElem)) {
+            this.compareElem.addEventListener('animationend', (ev) => {
+                if (ev.animationName == "compared_scale") {
+                    this.compareElem.classList.remove('compared_scale');
+                }
+            });
+        }
+    }
+    getProdId(el) {
+        if (el.hasAttribute('data-prodid') && (parseIntOrZero(el.dataset.prodid) != 0)) {
+            return el.dataset.prodid;
+        }
+        return null;
+    }
+    setCompareCount(count) {
+        this.compareCountElem.innerHTML = (count == 0)? '' : count;
+        this.compareCountElem.hiddenParentByСondition(count > 0);
+    }
+    setCompareElemColor(count) {
+        if(count > 0) {
+            if (!this.compareElem.classList.contains('compared')) {
+                this.compareElem.classList.add('compared');
+                this.compareElem.classList.add('compared_scale');
+            } else {
+                this.compareElem.classList.add('compared_scale');
+            }
+        }
+        if(count == 0 && this.compareElem.classList.contains('compared')) {
+            this.compareElem.classList.remove('compared');
+            this.compareElem.classList.add('compared_scale');
+        }
+    }
+    selectProduct(el, res) {
+        let itemSvgElem = el.querySelector('i');
+        itemSvgElem.classList.remove('uncompare');
+        itemSvgElem.classList.add('compare');
+        this.setCompareCount(res['quantity']);
+        this.setCompareElemColor(res['quantity']);
+    }
+    deselectProduct(el, res) {
+        let itemSvgElem = el.querySelector('i');
+        itemSvgElem.classList.remove('compared');
+        itemSvgElem.classList.remove('compare');
+        itemSvgElem.classList.add('uncompare');
+        this.setCompareCount(res['quantity']);
+        this.setCompareElemColor(res['quantity']);
+    }
+    increment(el) {
+        let prodId = this.getProdId(el);
+        if (prodId !== null) {
+            this.add(el, prodId);
+        }
+    }
+    decrement(el) {
+        let prodId = this.getProdId(el);
+        if (prodId !== null) {
+            this.delete(el, prodId);
+        }
+    }
+    add(el, prodId) {
+        const data = {
+            id: prodId,
+        }
+        fetchAsync('POST', this.addUrl, data)
+            .then(res => {
+                this.selectProduct(el, res);
+            })
+    }
+    delete(el, prodId) {
+        const data = {
+            id: prodId,
+        }
+        fetchAsync('POST', this.deleteUrl, data)
+            .then(res => {
+                this.deselectProduct(el, res);
+            })
+    }
+    setCompareBy(el) {
+        let itemSvgElem = el.querySelector('i');
+        if(!itemSvgElem.classList.contains('compare') && !itemSvgElem.classList.contains('compared')) {
+            this.increment(el);
+        } else {
+            this.decrement(el);
+        }
+    }
+    toggle() {
+        const el = event.target;
+        this.setCompareBy(el);
+    }
+}
+const compare = new CompareMamager({
+    addUrl: '/shop/comparison/add/',
+    deleteUrl: '/shop/comparison/delete/',
+    compareSelector: '#compare-total i',
+    compareCountSelector: '#compare-counter span',
+})
 
-// class FilterWatcher {
-//     constructor(options) {
-//         this.obserEvent = options.obserEvent;
-//         this.obserElements = document.querySelectorAll(options.obserElementsSelector);
-//         this.applySelector = document.querySelector(options.applySelector);
-//         this.filters = [];
-//         this.setup();
-//     }
-//     setup() {
-//         this.obserElements.forEach((el) => {
-//             el.addEventListener(this.obserEvent, this.checkEvent);
-//         });
-//     }
-//     checkEvent = () => {
-//         this.obserElements.forEach((el) => {
-//             const filter = this.getFilter(el);
-//             if (el.checked) {
-//                 if (!this.filters.includes(filter)) {
-//                     this.filters.push(filter);
-//                 }
-//             } else {
-//                 this.filters = this.filters.filter((v)=>v!=filter);
-//             }
-//         });
-//         if (this.filters.length > 0) {
-//             this.applySelector.classList.remove('invisibile');
-//         } else {
-//             this.applySelector.classList.add('invisibile');
-//         }
-//     }
-//     getFilter(el) {
-//         return `${el.dataset.attr}=${el.dataset.val}`
-//     }
-//     apply(clear=false) {
-//         let urlParts = window.location.href.split('?');
-//         if (urlParts.length > 1) {
-//             const searchParams = urlParts[1].split('&').filter((p)=>p.startsWith('search'))
-//             if (!clear && this.filters.length > 0) {
-//                 const paramsStr = this.filters.concat(searchParams).join('&');
-//                 window.location.href = urlParts[0] + '?' + paramsStr
-//             } else {
-//                 this.filters = [];
-//                 const paramsStr = (searchParams.length > 0)? '?' + searchParams.join('&') : '';
-//                 window.location.href = urlParts[0] + paramsStr;
-//             }
-//         } else {
-//             const paramsStr = (this.filters.length > 0)? '?' + this.filters.join('&') : '';
-//             window.location.href = urlParts[0] + paramsStr;
-//         }
-//     }
-// }
+class InputWatcher {
+    constructor(options) {
+        this.obserEvent = options.obserEvent;
+        this.obserElements = document.querySelectorAll(options.obserElementsSelector);
+        this.handler = options.handler;
+        this.setup();
+    }
+    setup() {
+        this.obserElements.forEach((el) => {
+            el.addEventListener(this.obserEvent, this.checkEvent);
+        });
+    }
+    checkEvent = () => {
+        let tmpCounter = 0;
+        this.obserElements.forEach((el) => {
+            let value = el.value.trim();
+            if (value != '') {
+                tmpCounter += 1;
+            }
+        });
+        this.handler(this.obserElements.length == tmpCounter)
+    }   
+}
 
-// class Search {
-//     constructor(options) {
-//         this.searchInputElement = document.querySelector(options.searchInputElementSelector);
-//         this.params = [];
-//     }
-//     getSearchParams() {
-//         let rawParams = this.searchInputElement.value.split(',')
-//         rawParams.forEach((param) => {
-//             if(param !== '') {
-//                 this.params.push(`search-name=${param.trim()}`)
-//             }
-//         });
-//         return this.params;
-//     }
-//     apply() {
-//         let urlParts = window.location.href.split('?');
-//         const searchParams = this.getSearchParams()
-//         if (urlParts.length > 1) {
-//             const filterParams = urlParts[1].split('&').filter((p)=>!p.startsWith('search'))
-//             let paramsStr = filterParams.concat(searchParams).join('&');
-//             paramsStr = (paramsStr.length > 0)? '?' + paramsStr : '';
-//             window.location.href = urlParts[0] + paramsStr;
-//         } else {
-//             const paramsStr = (searchParams.length > 0)? '?' + searchParams.join('&') : '';
-//             window.location.href = urlParts[0] + paramsStr;
-//         }
-//     }
-// }
+class FilterWatcher {
+    constructor(options) {
+        this.obserEvent = options.obserEvent;
+        this.obserElements = document.querySelectorAll(options.obserElementsSelector);
+        this.applySelector = document.querySelector(options.applySelector);
+        this.filters = [];
+        this.setup();
+    }
+    setup() {
+        this.obserElements.forEach((el) => {
+            el.addEventListener(this.obserEvent, this.checkEvent);
+        });
+    }
+    checkEvent = () => {
+        this.obserElements.forEach((el) => {
+            const filter = this.getFilter(el);
+            if (el.checked) {
+                if (!this.filters.includes(filter)) {
+                    this.filters.push(filter);
+                }
+            } else {
+                this.filters = this.filters.filter((v)=>v!=filter);
+            }
+        });
+        if (this.filters.length > 0) {
+            this.applySelector.classList.remove('invisibile');
+        } else {
+            this.applySelector.classList.add('invisibile');
+        }
+    }
+    getFilter(el) {
+        return `${el.dataset.attr}=${el.dataset.val}`
+    }
+    apply(clear=false) {
+        let urlParts = window.location.href.split('?');
+        if (urlParts.length > 1) {
+            const searchParams = urlParts[1].split('&').filter((p)=>p.startsWith('full_name'))
+            if (!clear && this.filters.length > 0) {
+                const paramsStr = this.filters.concat(searchParams).join('&');
+                window.location.href = urlParts[0] + '?' + paramsStr
+            } else {
+                this.filters = [];
+                const paramsStr = (searchParams.length > 0)? '?' + searchParams.join('&') : '';
+                window.location.href = urlParts[0] + paramsStr;
+            }
+        } else {
+            const paramsStr = (this.filters.length > 0)? '?' + this.filters.join('&') : '';
+            window.location.href = urlParts[0] + paramsStr;
+        }
+    }
+}
 
-// const search = new Search({
-//     searchInputElementSelector: '#search-name',
-// })
+class Search {
+    constructor(options) {
+        this.searchInputElement = document.querySelector(options.searchInputElementSelector);
+        this.params = [];
+    }
+    getSearchParams() {
+        let rawParams = this.searchInputElement.value.split(',')
+        rawParams.forEach((param) => {
+            if(param !== '') {
+                this.params.push(`full_name=${param.trim()}`)
+            }
+        });
+        return this.params;
+    }
+    apply() {
+        let urlParts = window.location.href.split('?');
+        const searchParams = this.getSearchParams()
+        if (urlParts.length > 1) {
+            const filterParams = urlParts[1].split('&').filter((p)=>!p.startsWith('full_name'));
+            let paramsStr = filterParams.concat(searchParams).join('&');
+            paramsStr = (paramsStr.length > 0)? '?' + paramsStr : '';
+            window.location.href = urlParts[0] + paramsStr;
+        } else {
+            const paramsStr = (searchParams.length > 0)? '?' + searchParams.join('&') : '';
+            window.location.href = urlParts[0] + paramsStr;
+        }
+    }
+}
 
-// const wish = new WishMamager({
-//     addUrl: '/wish/add/',
-//     deleteUrl: '/wish/delete/',
-//     wishSelector: '#wish-total svg',
-//     wishCountSelector: '#wish-counter span',
-// })
-// const compare = new CompareMamager({
-//     addUrl: '/comparison/add/',
-//     deleteUrl: '/comparison/delete/',
-//     compareSelector: '#compare-total svg',
-//     compareCountSelector: '#compare-counter span',
-// })
+const search = new Search({
+    searchInputElementSelector: '#search',
+})
 
 class LocalStorageManager {
     set(key, value) {
@@ -871,3 +888,90 @@ class LocalStorageManager {
     }
 }
 const storage = new LocalStorageManager()
+
+
+/* ---------------------------------------------- */
+
+const handlers = {
+    onlyDigital: (event) => {
+        var ASCIICode = (event.which) ? event.which : event.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
+            event.returnValue = false;
+        }
+    },
+    notZero: (event) => {
+        setTimeout(() => {
+            if (event.target.value.length <= 1) {
+                if (event.target.value == 0) {
+                    event.target.value = 1
+                } 
+            }
+            event.target.dataset.quantity = event.target.value;
+            cart.update(event.target, event.target.dataset.prodid, event.target.dataset.quantity);
+        }, '1000');
+    },
+    changeProdQty: (event) => {
+        setTimeout(() => {
+            event.target.dataset.quantity = event.target.value;
+            cart.update(event.target, event.target.dataset.prodid, event.target.dataset.quantity);
+        }, '1000');
+    },
+    changeWidth: (event) => {
+        const length = event.target.value.length
+        if (length > 3 || length <= 6) {
+            event.target.size = event.target.value.length
+        } 
+    }
+}
+function handle(event, vs=[]) {
+    /* <input 
+        onkeydown="handle(event, ['onlyDigital'])" 
+        onkeyup="handle(event, ['notZero'])"
+        oninput="handle(event, ['changeProdQty'])"> */
+    vs.forEach(v => handlers[v](event));
+}
+
+function inputHandlers(handlers) {
+    /* <input data-handlers="keydown:onlyDigital,changeWidth|keyup:notZero|input:changeProdQty"> */
+    const elems = document.querySelectorAll('[data-handlers]');
+    elems.forEach((el) => {
+        const eventHandler = el.dataset.handlers.split('|');
+        eventHandler.forEach((handler) => {
+            const [evList, hlList] = handler.split(':');
+            const evts = evList.split(',');
+            evts.forEach((evt) => {
+                const hdls = hlList.split(',');
+                hdls.forEach((hdlName) => {
+                    el.addEventListener(evt, handlers[hdlName]);
+                })
+            })
+        })
+    })
+}
+inputHandlers(handlers);
+
+// class InputValidation {
+//     constructor(options) {
+//         this.obserElements = document.querySelectorAll(options.obserElementsSelector);
+//         this.eventValidators = options.eventValidators;
+//         this.setup();
+//     }
+//     setup() {
+//         this.obserElements.forEach((el) => {
+//             for (const [event, validators] of Object.entries(this.eventValidators)) {
+//                 validators.forEach((v) => {
+//                     el.addEventListener('keydown', this.handler);
+//                 });
+//             }
+//         });
+//     }
+//     handler(event) {
+//         event.returnValue = onlyOneToNine(event);
+//     }
+// }
+// const inputValidators = new InputValidation({
+//     obserElementsSelector: '.onlyDigitalNotZero',
+//     eventValidators: {'keydown': [
+//         () => { return false }
+//     ]}
+// })

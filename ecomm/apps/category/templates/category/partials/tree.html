@@ -1,5 +1,8 @@
+{% load static %} 
+{% load i18n %}
 {% load mptt_tags %}
 {% load helpers %}
+
 
 {% recursetree items %}
     <a class="dropdown-item" href="{% url 'company:category' company.alias node.slug %}">

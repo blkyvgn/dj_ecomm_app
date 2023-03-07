@@ -9,11 +9,19 @@
 		</a>
 		<figcaption class="info-wrap">
 			<a href="{% url 'company:product' company.alias item.cat_slug item.slug %}" class="title">
-				{{ item.prod_base.name|in_lang_or_default }}
+                {% include 'product/partials/product_name.html' %}
 			</a>
-			<div class="price mt-1">{{ item.price }}</div>
-			{% include 'product/partials/product_btn.html' %}
+			<div class="price mt-1">
+				{% if item.sale_price %} 
+					<span class="price">{{ item.sale_price }}</span>
+					<del class="price-old">{{ item.price }}</del>
+				{% else %} 
+					<span class="price">{{ item.price }}</span>
+				{% endif %}
+			</div>
+			{% comment %}
+			{% include 'product/partials/product_btn.html' with w_full=True %}
+			{% endcomment %}
 		</figcaption>
-		
 	</div>
 </div>

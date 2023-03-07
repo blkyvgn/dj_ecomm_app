@@ -1,6 +1,7 @@
 from django.conf import settings
 from ecomm.vendors.base.view import BaseDetailView
 from ecomm.vendors.helpers.pagination import paginator
+from ecomm.vendors.helpers.request import get_filter_arguments
 from ecomm.apps.category.models import Category
 from django.db.models import Prefetch
 from ecomm.apps.product.models import (
@@ -31,6 +32,7 @@ class CategoryView(BaseDetailView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		category = kwargs.get('object')
+		filter_arguments = get_filter_arguments(self.request)
 
 		attributes = ProductTypeAttribute.objs.valid().\
 			filter(prod_type__prod__prod_base__category__slug=category.slug).\
@@ -57,7 +59,15 @@ class CategoryView(BaseDetailView):
 				cat_slug=F('prod_base__category__slug'),
 			).\
 			select_related('prod_base').\
-			order_by('-sold')
+			filter_by_params(_or=True, 
+                full_name__icontains=filter_arguments['full_name'],
+                attribute_values__value__in=filter_arguments['attributes']
+            ).\
+            filter_by_params(
+                price__gte=filter_arguments['price_min'],
+                price__lte=filter_arguments['price_max']
+            ).\
+			order_by('-sold').distinct()
 		context['products'] = paginator(self.request, products, per_page=settings.NUMBER_PER_PAGE)
 		context['attributes'] = attributes
 		context['attribute_values'] = attribute_values

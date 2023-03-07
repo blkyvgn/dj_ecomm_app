@@ -1,78 +1,78 @@
+{% load static %} 
 {% load i18n %}
 {% load helpers %}
 
 <section class="section-content padding-y bg">
-<div class="container">
-
-<!-- ============================ COMPONENT 1 ================================= -->
-
-<div class="row">
-	<aside class="col-lg-9">
-<div class="card">
-<table class="table table-borderless table-shopping-cart">
-<thead class="text-muted">
-<tr class="small text-uppercase">
-  <th scope="col">Product</th>
-  <th scope="col" width="120">Quantity</th>
-  <th scope="col" width="120">Price</th>
-  <th scope="col" class="text-right" width="200"> </th>
-</tr>
-</thead>
-<tbody>
-{% for item in cart %}
-{% with prod=item.product %}
-	{% include 'product/partials/cart_item.html' with item=prod %}
-{% endwith %}
-{% endfor %}
-</tbody>
-</table>
-</div> <!-- card.// -->
-
-	</aside> <!-- col.// -->
-	<aside class="col-lg-3">
-
-		<div class="card">
-		<div class="card-body">
-			<dl>
-				<dt>Total quantity</dt>
-				<dd>
-					<span class="mr-4">{% translate "Items" %}:
-              <span id="cart-quantity">
-                  {% with total_qty=cart|length %}
-                      {% if total_qty > 0 %}
-                          {{ total_qty }}
-                      {% endif %}
-                  {% endwith %} 
-              </span>
-          </span>
-				</dd>
-			</dl>
-			<dl class="dlist-align">
-			  <dt>Total price:</dt>
-			  <dd id="cart-total" class="text-right">${{ cart.get_total_price }}</dd>
-			</dl>
-			<dl class="dlist-align">
-			  <dt>Tax:</dt>
-			  <dd id="cart-delivery" class="text-right">${{ cart.get_delivery_price }}</dd>
-			</dl>
-			<dl class="dlist-align">
-			  <dt>Total:</dt>
-			  <dd class="text-right text-dark b"><strong id="cart-subtotal">${{ cart.get_subtotal_price }}</strong></dd>
-			</dl>
-			<hr>
-			<p class="text-center mb-3">
-				<img src="./images/misc/payments.png" height="26">
-			</p>
-			<a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
-			<a href="./store.html" class="btn btn-light btn-block">Continue Shopping</a>
-		</div> <!-- card-body.// -->
-		</div> <!-- card.// -->
-
-</aside> <!-- col.// -->
-
-
-</div> <!-- row.// -->
-<!-- ============================ COMPONENT 1 END .// ================================= -->
-
-</div> <!-- container .//  -->
+	<div class="container">
+		<div class="row">
+		<aside class="col-lg-9">
+			<div class="card">
+				{% with total_qty=cart|length %}
+				<table id="cart-table" 
+					class="table table-borderless table-shopping-cart {% if total_qty == 0 %}hidden{% endif %}"
+				>
+					<thead class="text-muted">
+					<tr class="small text-uppercase">
+					  <th scope="col">{% translate "Product" %}</th>
+					  <th scope="col" width="120">{% translate "Quantity" %}</th>
+					  <th scope="col" width="120">{% translate "Price" %}</th>
+					  <th scope="col" class="text-right" width="200"> </th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for item in cart %}
+						{% with prod=item %}
+							{% include 'product/partials/cart_item.html' with item=prod %}
+						{% endwith %}
+					{% endfor %}
+					</tbody>
+				</table>
+				<h4 id="cart-table-empty" class="text-center p-3 {% if total_qty > 0 %}hidden{% endif %}">
+					{% translate "Cart is empty" %}
+				</h4>
+		        {% endwith %} 
+			</div>
+		</aside>
+		<aside class="col-lg-3">
+			<div class="card">
+			<div class="card-body">
+				<dl>
+					<dt>{% translate "Total quantity" %}</dt>
+					<dd>
+						<span class="mr-4">{% translate "Items" %}:
+		             <span id="cart-quantity">
+		                {% with total_qty=cart|length %}
+		                    {% if total_qty > 0 %}
+		                        {{ total_qty }}
+		                    {% endif %}
+		                {% endwith %} 
+		              </span>
+		          </span>
+						</dd>
+					</dl>
+					<dl class="dlist-align">
+					  <dt>{% translate "Total price:" %}</dt>
+					  <dd id="cart-total" class="text-right">${{ cart.get_total_price }}</dd>
+					</dl>
+					<dl class="dlist-align">
+					  <dt>{% translate "Delivery:" %}</dt>
+					  <dd id="cart-delivery" class="text-right">${{ cart.get_delivery_price }}</dd>
+					</dl>
+					<dl class="dlist-align">
+					  <dt>{% translate "Total:" %}</dt>
+					  <dd class="text-right text-dark b"><strong id="cart-subtotal">${{ cart.get_subtotal_price }}</strong></dd>
+					</dl>
+					<hr>
+					<p class="text-center mb-3">
+						<img src="{% static 'company/images/misc/payments.png' %}" height="26">
+					</p>
+					<a href="./place-order.html" class="btn btn-primary btn-block">{% translate "Checkout" %}</a>
+					<a href="{% url 'company:shop' company.alias %}" class="btn btn-light btn-block">
+						{% translate "Continue Shopping" %}
+					</a>
+				</div>
+				</div>
+		</aside>
+		</div> 
+	</div>
 </section>

@@ -126,9 +126,7 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 		blank=True,
 		null=True,
 	)
-	full_name = models.CharField(
-		max_length=500,
-	)
+	full_name = models.TextField()
 	prod_base = models.ForeignKey(
 		ProductBase, 
 		related_name='base_prods', 
@@ -247,12 +245,16 @@ class Product(BaseModel, TimestampsMixin, SoftdeleteMixin, HelpersMixin, ImgMixi
 				sold=F('stock_prod__units_sold'),
 				cat_slug=F('prod_base__category__slug'),
 			).\
-			order_by('-sold')[:per_page]
+			order_by('-sold')[:per_page].\
+			distinct()
 
 	list_values = [
 		'id', 
+		'slug',
+		'sku',
 		'prod_base_id', 
 		'prod_base__name', 
+		'prod_base__category__slug',
 		'thumb', 
 		'ext_name', 
 		'brand__name',

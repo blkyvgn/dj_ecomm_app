@@ -73,8 +73,11 @@ button i {
   left: initial;
 }
 #cart-icon {
-  top: 26%;
+  top: 30%;
   right: 26%;
+}
+.justify-center {
+  justify-content: center;
 }
 
 /* =========================================================================================== */

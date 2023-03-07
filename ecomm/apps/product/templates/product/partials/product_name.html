@@ -1,0 +1,8 @@
+{% load helpers %}
+
+{{ item.prod_base.name|in_lang_or_default }}
+<small>
+    {% if item.ext_name %}
+        ({{ item.ext_name|in_lang_or_default }})
+    {% endif %}
+</small>
