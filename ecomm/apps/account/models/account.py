@@ -59,7 +59,6 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 	is_active = models.BooleanField(
 		default=True
 	)
-
 	wish = models.JSONField(
 		null=True, 
 		blank=True,
@@ -119,27 +118,37 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 		except:
 			return []
 
-	def update_wish(self, prod_id, key='add', alias=settings.COMPANY_ALIAS):
-		if key == 'add':
-			if self.wish:
-				self.wish.append(str(prod_id))
-			else:
-				self.wish = [str(prod_id)]
-		elif key == 'remove':
-			if self.wish:
-				self.wish.remove(str(prod_id))
+	def update_wish(self, prod_id, act='add', alias=settings.COMPANY_ALIAS):
+		_wish = self.get_wish(alias)
+		prod_id = str(prod_id)
+		if act == 'add':
+			_wish.append(prod_id)
+		elif act == 'remove':
+			if prod_id in _wish:
+				_wish.remove(prod_id)
+		else:
+			raise ValueError('Update wish: illegal action')
+		if self.wish:
+			self.wish[alias] = list(set(_wish))
+		else:
+			self.wish = {alias: list(set(_wish))}
 		self.save(update_fields=['wish'])
 
-	def update_compare(self, prod_id, key='add', alias=settings.COMPANY_ALIAS):
-		if key == 'add':
-			if self.comparison:
-				self.comparison.append(str(prod_id))
-			else:
-				self.comparison = [str(prod_id)]
-		elif key == 'remove':
-			if self.comparison:
-				self.comparison.remove(str(prod_id))
-		self.save(update_fields=['comparison'])
+	def update_compare(self, prod_id, act='add', alias=settings.COMPANY_ALIAS):
+		_compare = self.get_compare(alias)
+		prod_id = str(prod_id)
+		if act == 'add':
+			_compare.append(prod_id)
+		elif act == 'remove':
+			if prod_id in _compare:
+				_compare.remove(prod_id)
+		else:
+			raise ValueError('Update compare: illegal action')
+		if self.compare:
+			self.compare[alias] = list(set(_compare))
+		else:
+			self.compare = {alias: list(set(_compare))}
+		self.save(update_fields=['compare'])
 	
 
 

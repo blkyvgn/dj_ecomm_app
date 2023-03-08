@@ -82,31 +82,40 @@
 								<a href="./register.html"> {% translate "Register" %}</a>
 							</div>
 						</div>
-						{% with wish_qty=wish|length %}
-						<span id="wish-total" class="hidden">
-							<div id="wish-counter" class="hidden">
-								<span>
-			                        {% if wish_qty > 0 %}
-			                            {{ wish_qty }}
-			                        {% endif %}
-								</span>
-							</div>
-						</span>
-						{% endwith %} 
-						{% with comparison_qty=comparison|length %}
-						<span id="compare-total" class="hidden">
-							<div id="compare-counter" class="hidden">
-								<span>
-			                        {% if comparison_qty > 0 %}
-	                            		{{ comparison_qty }}
-	                        		{% endif %}
-								</span>
-							</div>
-						</span>
-						{% endwith %} 
+						<div class="d-flex align-items-center">
+							{% with compare_qty=compare|length %}
+							<a href="{% url 'company:compare' company.alias %}" class="widget-header pl-2">
+								<div id="compare-total" class="position-relative icon icon-xs rounded-circle border">
+									<i id="compare-icon" class="position-absolute fa fa-balance-scale {% if compare_qty > 0 %}text-primary{% endif %}" 
+									aria-hidden="true"></i>
+								</div>
+								<div id="compare-counter" class="{% if compare_qty == 0 %}hidden{% endif %}">
+									<span class="badge badge-pill badge-danger notify font-size-10 right-6">
+				                        {% if compare_qty > 0 %}
+		                            		{{ compare_qty }}
+		                        		{% endif %}
+									</span>
+								</div>
+							</a>
+							{% endwith %} 
+							{% with wish_qty=wish|length %}
+							<a href="{% url 'company:wish' company.alias %}" class="widget-header pl-2">
+								<div id="wish-total" class="position-relative icon icon-xs rounded-circle border">
+									<i id="wish-icon" class="position-absolute fa fa-heart {% if wish_qty > 0 %}text-primary{% endif %}" aria-hidden="true"></i>
+								</div>
+								<div id="wish-counter" class="{% if wish_qty == 0 %}hidden{% endif %}">
+									<span class="badge badge-pill badge-danger notify font-size-10 right-6">
+				                        {% if wish_qty > 0 %}
+				                            {{ wish_qty }}
+				                        {% endif %}
+									</span>
+								</div>
+							</a>
+							{% endwith %} 
+						</div>
 						{% with total_qty=cart|length %}
 						<a href="{% url 'company:cart' company.alias %}" 
-							class="widget-header pl-3 ml-3">
+							class="widget-header pl-2">
 							<div class="position-relative icon icon-sm rounded-circle border">
 								<i id="cart-icon" class="position-absolute fa fa-shopping-cart {% if total_qty > 0 %}text-success{% endif %}"></i>
 							</div>

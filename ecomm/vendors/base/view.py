@@ -4,10 +4,10 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from ecomm.vendors.mixins.data import CommonDataMixin
 
-class BaseView(View):
+class BaseView(CommonDataMixin, View):
 	pass
 
-class ProtectBaseView(LoginRequiredMixin, View):
+class ProtectBaseView(LoginRequiredMixin, CommonDataMixin, View):
 	pass
 
 class BaseTemplateView(CommonDataMixin, TemplateView):

@@ -19,7 +19,7 @@ class AddView(BaseView):
 		wish.add(product.id)
 		wish_filling = len(wish)
 		if request.user.is_authenticated:
-			request.user.update_wish(product.id, 'add')
+			request.user.update_wish(product.id, act='add', alias=request.company.alias)
 		return JsonResponse({'quantity': wish_filling})
 
 
@@ -29,7 +29,7 @@ class DeleteView(BaseView):
 		product = get_object_or_404(Product, slug=prod_slug)
 		wish.delete(product.id)
 		if request.user.is_authenticated:
-			request.user.update_wish(product.id, 'remove')
+			request.user.update_wish(product.id, act='remove', alias=request.company.alias)
 		return redirect(request.META.get('HTTP_REFERER'))
 
 	def post(self, request, *args, **kwargs):
@@ -40,5 +40,5 @@ class DeleteView(BaseView):
 		wish.delete(product.id)
 		wish_filling = len(wish)
 		if request.user.is_authenticated:
-			request.user.update_wish(product.id, 'remove')
+			request.user.update_wish(product.id, act='remove', alias=request.company.alias)
 		return JsonResponse({'quantity': wish_filling, 'id':item_id})

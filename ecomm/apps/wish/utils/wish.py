@@ -9,7 +9,7 @@ class Wish:
 		self.session = request.session
 		wish = self.session.get('wish')
 		if 'wish' not in request.session:
-			wish_prod_ids = request.user.get_wish() if request.user.is_authenticated else []
+			wish_prod_ids = request.user.get_wish(request.company.alias) if request.user.is_authenticated else []
 			wish = self.session['wish'] = wish_prod_ids
 		self.wish = wish
 

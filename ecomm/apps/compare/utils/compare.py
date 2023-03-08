@@ -9,15 +9,17 @@ class Compare:
 		self.session = request.session
 		compare = self.session.get('compare')
 		if 'compare' not in request.session:
-			compare_prod_ids = request.user.get_compare() if request.user.is_authenticated else []
+			compare_prod_ids = request.user.get_compare(request.company.alias) if request.user.is_authenticated else []
 			compare = self.session['compare'] = compare_prod_ids
+		print(compare)
 		self.compare = compare
 
 	def __iter__(self):
 		product_ids = self.compare
 		products = Product.objs.valid().\
 			filter(id__in=product_ids).\
-			select_related('prod_base')
+			select_related('prod_base').\
+			prefetch_related('attribute_values__product_attribute')
 
 		for prod in products:
 			yield prod

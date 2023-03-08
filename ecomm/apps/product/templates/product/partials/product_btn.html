@@ -3,6 +3,14 @@
 {% load helpers %}
 
 {% if item.units %}
+	<div class="d-flex justify-content-center align-items-center">
+		<span class="text-muted" onclick="compare.toggle()" data-prodid="{{ item.id }}">
+			<i class="fa fa-balance-scale px-4 {% if item.id|to_str in compare.get_product_ids %}text-primary{% endif %}" aria-hidden="true"></i>
+		</span>
+		<span class="text-muted" onclick="wish.toggle()" data-prodid="{{ item.id }}">
+			<i class="fa fa-heart px-4 {% if item.id|to_str in wish.get_product_ids %}text-primary{% endif %}" aria-hidden="true"></i>
+		</span>
+	</div>
 	{% cart_product_qty cart item.id as item_quantity %}
 	<button type="button" class="position-relative btn 
 		{% if item.id in cart.get_product_ids %}

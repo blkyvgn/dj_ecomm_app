@@ -61,3 +61,7 @@ def slice_page_range(val, page_number, by_number=settings.NUMBER_PAGINATIONS):
 @register.simple_tag
 def cart_product_qty(cart, item_id):
     return cart.get_product_quantity(item_id)
+
+@register.filter(name='to_str')
+def to_str(value):
+    return str(value)

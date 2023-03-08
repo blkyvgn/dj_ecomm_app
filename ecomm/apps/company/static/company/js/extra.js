@@ -555,14 +555,16 @@ class WishMamager {
         this.wishElem = document.querySelector(options.wishSelector);
         this.wishCountElem = document.querySelector(options.wishCountSelector);
         this.wishCount = parseIntOrZero(getInnerHtml(options.wishCountSelector));
+        this.wishedClass = options.wishedClass;
+        this.animationClass = options.animationClass;
         // this.wishes = [];
         this.setup();
     }
     setup() {
-        if (isExist(this.wishElem)) {
+        if (isExist(this.wishElem) && isExist(this.animationClass)) {
             this.wishElem.addEventListener('animationend', (ev) => {
-                if (ev.animationName == 'wished_scale') {
-                    this.wishElem.classList.remove('wished_scale');
+                if (ev.animationName == this.animationClas) {
+                    this.wishElem.classList.remove(this.animationClass);
                 }
             });
         }
@@ -579,30 +581,33 @@ class WishMamager {
     } 
     setWishElemColor(count) {
         if(count > 0) {
-            if (!this.wishElem.classList.contains('wished')) {
-                this.wishElem.classList.add('wished');
-                this.wishElem.classList.add('wished_scale');
+            if (!this.wishElem.classList.contains(this.wishedClass)) {
+                this.wishElem.classList.add(this.wishedClass);
+                if (isExist(this.animationClass)) {
+                    this.wishElem.classList.add(this.animationClas);
+                }
             } else {
-                this.wishElem.classList.add('wished_scale');
+                if (isExist(this.animationClass)) {
+                    this.wishElem.classList.add(this.animationClas);
+                }
             }
         }
-        if(count == 0 && this.wishElem.classList.contains('wished')) {
-            this.wishElem.classList.remove('wished');
-            this.wishElem.classList.add('wished_scale');
+        if(count == 0 && this.wishElem.classList.contains(this.wishedClass)) {
+            this.wishElem.classList.remove(this.wishedClass);
+            if (isExist(this.animationClass)) {
+                this.wishElem.classList.add(this.animationClass);
+            }
         }
     }
     selectProduct(el, res) {
-        let itemSvgElem = el.querySelector('i');
-        itemSvgElem.classList.remove('unwish');
-        itemSvgElem.classList.add('wish');
+        let itemIconElem = el.querySelector('i');
+        itemIconElem.classList.add(this.wishedClass);
         this.setWishCount(res['quantity']);
         this.setWishElemColor(res['quantity']);
     }
     deselectProduct(el, res) {
-        let itemSvgElem = el.querySelector('i');
-        itemSvgElem.classList.remove('wished');
-        itemSvgElem.classList.remove('wish');
-        itemSvgElem.classList.add('unwish');
+        let itemIconElem = el.querySelector('i');
+        itemIconElem.classList.remove(this.wishedClass);
         this.setWishCount(res['quantity']);
         this.setWishElemColor(res['quantity']);
     }
@@ -637,8 +642,8 @@ class WishMamager {
             })
     }
     setWishBy(el) {
-        let itemSvgElem = el.querySelector('i');
-        if(!itemSvgElem.classList.contains('wish') && !itemSvgElem.classList.contains('wished')) {
+        let itemIconElem = el.querySelector('i');
+        if(!itemIconElem.classList.contains(this.wishedClass)) {
             this.increment(el);
         } else {
             this.decrement(el);
@@ -654,6 +659,8 @@ const wish = new WishMamager({
     deleteUrl: '/shop/wish/delete/',
     wishSelector: '#wish-total i',
     wishCountSelector: '#wish-counter span',
+    wishedClass: 'text-primary',
+    animationClass: 'wished_scale',
 })
 
 class CompareMamager {
@@ -663,14 +670,16 @@ class CompareMamager {
         this.compareElem = document.querySelector(options.compareSelector);
         this.compareCountElem = document.querySelector(options.compareCountSelector);
         this.compareCount = parseIntOrZero(getInnerHtml(options.compareCountSelector));
+        this.comparedClass = options.comparedClass;
+        this.animationClass = options.animationClass;
         // this.compares = [];
         this.setup();
     }
     setup() {
-        if (isExist(this.compareElem)) {
+        if (isExist(this.compareElem) && isExist(this.animationClass)) {
             this.compareElem.addEventListener('animationend', (ev) => {
-                if (ev.animationName == "compared_scale") {
-                    this.compareElem.classList.remove('compared_scale');
+                if (ev.animationName == this.animationClass) {
+                    this.compareElem.classList.remove(this.animationClass);
                 }
             });
         }
@@ -687,30 +696,33 @@ class CompareMamager {
     }
     setCompareElemColor(count) {
         if(count > 0) {
-            if (!this.compareElem.classList.contains('compared')) {
-                this.compareElem.classList.add('compared');
-                this.compareElem.classList.add('compared_scale');
+            if (!this.compareElem.classList.contains(this.comparedClass)) {
+                this.compareElem.classList.add(this.comparedClass);
+                if (isExist(this.animationClass)) {
+                    this.compareElem.classList.add(this.animationClass);
+                }
             } else {
-                this.compareElem.classList.add('compared_scale');
+                if (isExist(this.animationClass)) {
+                    this.compareElem.classList.add(this.animationClass);
+                }
             }
         }
-        if(count == 0 && this.compareElem.classList.contains('compared')) {
-            this.compareElem.classList.remove('compared');
-            this.compareElem.classList.add('compared_scale');
+        if(count == 0 && this.compareElem.classList.contains(this.comparedClass)) {
+            this.compareElem.classList.remove(this.comparedClass);
+            if (isExist(this.animationClass)) {
+                this.compareElem.classList.add(this.animationClass);
+            }
         }
     }
     selectProduct(el, res) {
-        let itemSvgElem = el.querySelector('i');
-        itemSvgElem.classList.remove('uncompare');
-        itemSvgElem.classList.add('compare');
+        let itemIconElem = el.querySelector('i');
+        itemIconElem.classList.add(this.comparedClass);
         this.setCompareCount(res['quantity']);
         this.setCompareElemColor(res['quantity']);
     }
     deselectProduct(el, res) {
-        let itemSvgElem = el.querySelector('i');
-        itemSvgElem.classList.remove('compared');
-        itemSvgElem.classList.remove('compare');
-        itemSvgElem.classList.add('uncompare');
+        let itemIconElem = el.querySelector('i');
+        itemIconElem.classList.remove(this.comparedClass);
         this.setCompareCount(res['quantity']);
         this.setCompareElemColor(res['quantity']);
     }
@@ -745,8 +757,8 @@ class CompareMamager {
             })
     }
     setCompareBy(el) {
-        let itemSvgElem = el.querySelector('i');
-        if(!itemSvgElem.classList.contains('compare') && !itemSvgElem.classList.contains('compared')) {
+        let itemIconElem = el.querySelector('i');
+        if(!itemIconElem.classList.contains(this.comparedClass)) {
             this.increment(el);
         } else {
             this.decrement(el);
@@ -758,10 +770,12 @@ class CompareMamager {
     }
 }
 const compare = new CompareMamager({
-    addUrl: '/shop/comparison/add/',
-    deleteUrl: '/shop/comparison/delete/',
+    addUrl: '/shop/compare/add/',
+    deleteUrl: '/shop/compare/delete/',
     compareSelector: '#compare-total i',
     compareCountSelector: '#compare-counter span',
+    comparedClass: 'text-primary',
+    animationClass: 'compared_scale',
 })
 
 class InputWatcher {
