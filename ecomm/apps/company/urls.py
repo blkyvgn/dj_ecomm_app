@@ -1,6 +1,6 @@
 from django.urls import path, include
 from ecomm.apps.company.views import company
-from ecomm.apps.company.views.shop import shop
+from ecomm.apps.company.views.shop import shop, search
 from ecomm.apps.company.views.category import category
 from ecomm.apps.company.views.product import product
 from ecomm.apps.company.views.cart import cart
@@ -16,6 +16,7 @@ urlpatterns = [
 	path('home/', company.HomeView.as_view(), name='home'),
 	path('shop/', include([
 		path('', shop.ShopView.as_view(), name='shop'),
+		path('search', search.SearchView.as_view(), name='search'),
 
 		path('cart/', cart.CartView.as_view(), name='cart'),
 		path('cart/add/', cart_acts.AddView.as_view(), name='add_cart'),

@@ -67,6 +67,7 @@ class CategoryView(BaseDetailView):
                 price__gte=filter_arguments['price_min'],
                 price__lte=filter_arguments['price_max']
             ).\
+            filter(is_default=True).\
 			order_by('-sold').distinct()
 		context['products'] = paginator(self.request, products, per_page=settings.NUMBER_PER_PAGE)
 		context['attributes'] = attributes

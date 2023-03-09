@@ -65,3 +65,9 @@ def cart_product_qty(cart, item_id):
 @register.filter(name='to_str')
 def to_str(value):
     return str(value)
+
+@register.inclusion_tag('partials/form_errors.html')
+def form_errors(errors):
+    return {'errors':errors}
+
+

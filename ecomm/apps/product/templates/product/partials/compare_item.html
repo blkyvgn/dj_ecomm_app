@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load helpers %}
 
-<div class="col-md-4">
+<div class="col-md-3">
 	<figure class="card card-product-grid">
 		<div class="img-wrap"> 
 			<img src="{{ item.thumb|url_or_default }}">
@@ -21,8 +21,7 @@
 					{% endif %}
 				</div>
 			</div>
-			{% include 'product/partials/wish_compare.html' %}
-			{% include 'product/partials/product_btn.html' with w_full=True icon=True %}
+			{% include 'product/partials/product_btn.html' with w_full=True %}
 		</figcaption>
 	</figure>
 </div>

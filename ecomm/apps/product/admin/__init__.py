@@ -5,4 +5,5 @@ from .attribute import (
 from .prod_type import ProductTypeAdmin
 from .product import (
 	ProductBaseAdmin,
+	# ProductAttributeValuesAdmin,
 )

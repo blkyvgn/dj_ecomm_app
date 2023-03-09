@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.utils.translation import get_language
 from ecomm.apps.product.models import Product
-
+from django.db.models import F
 
 
 class Compare:
@@ -11,7 +11,6 @@ class Compare:
 		if 'compare' not in request.session:
 			compare_prod_ids = request.user.get_compare(request.company.alias) if request.user.is_authenticated else []
 			compare = self.session['compare'] = compare_prod_ids
-		print(compare)
 		self.compare = compare
 
 	def __iter__(self):
@@ -19,7 +18,11 @@ class Compare:
 		products = Product.objs.valid().\
 			filter(id__in=product_ids).\
 			select_related('prod_base').\
-			prefetch_related('attribute_values__product_attribute')
+			prefetch_related('attribute_values__product_attribute').\
+			annotate(
+				units=F('stock_prod__units'),
+				cat_slug=F('prod_base__category__slug'),
+			)
 
 		for prod in products:
 			yield prod

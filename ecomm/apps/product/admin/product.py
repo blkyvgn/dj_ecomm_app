@@ -6,6 +6,7 @@ from django.utils.html import format_html
 from ecomm.apps.product.models import (
 	ProductBase,
 	ProductBaseTranslation,
+	ProductAttributeValues,
 	Product,
 	Media,
 )
@@ -104,6 +105,18 @@ class ProductAttributeValuesInline(admin.StackedInline):
 	)
 	# search_fields = ('attribute_values',)
 	# raw_id_fields = ['attribute_values',]
+
+# @admin.register(ProductAttributeValues)
+# class ProductAttributeValuesAdmin(AdminBaseModel):
+# 	fieldsets = (
+# 		(None, {
+# 			'fields': (
+# 				('attribute_values',),
+# 				('product',),
+# 			)
+# 		}),
+# 	)
+# 	raw_id_fields = ['attribute_values', 'product',]
 
 @admin.register(Product)
 class ProductAdmin(AdminBaseModel):

@@ -38,54 +38,64 @@
 							{{ product.short_desc|in_lang_or_default }}
 						{% endif %}
 					</p>
+            		<hr>
+            		{% for attr in attributes %}
+					<div class="row">
+						<div class="item-option-select">
+							<h6>
+								{% if attr.name %}
+			                        {{ attr.name|in_lang_or_default }}
+			                    {% else %}
+			                        {{ attr.slug }}
+			                    {% endif %}
+							</h6>
+							<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+								{% for val in attribute_values %}
+				                    {% if attr.slug == val.attr_slug %}
+				                    <label class="btn btn-light">
+				                    	<input type="radio" name="radio_color">
+			                            {% if val.name %}
+			                                {{ val.name|in_lang_or_default }}
+			                            {% else %}
+			                                {{ val.val }}
+			                            {% endif %}
+				                    </label>
+				                    {% endif %}
+				                {% endfor %}
+							</div>
+							{% comment %}
+							<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+								{% for val in prods_attribute_values %}
+				                    {% if attr.slug == val.attr_slug %}
+				                    <label class="btn btn-light {% if val in attribute_values %}active{% endif %}">
+				                    	<input type="radio" name="radio_color">
+			                            {% if val.name %}
+			                                {{ val.name|in_lang_or_default }}
+			                            {% else %}
+			                                {{ val.val }}
+			                            {% endif %}
+				                    </label>
+				                    {% endif %}
+				                {% endfor %}
+							</div>
+							{% endcomment %}
+			            </div> 
+					</div>
+            		{% endfor %}
 					<hr>
-						<div class="row">
-							<div class="item-option-select">
-								<h6>Choose Color</h6>
-								<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-								  <label class="btn btn-light">
-								    <input type="radio" name="radio_color"> Silver
-								  </label>
-								  <label class="btn btn-light">
-								    <input type="radio" name="radio_color" > Gray
-								  </label>
-								  <label class="btn btn-light active">
-								    <input type="radio" name="radio_color checked"> Gold
-								  </label>
-								  <label class="btn btn-light">
-								    <input type="radio" name="radio_color"> Black
-								  </label>
-								</div> 
-							</div>
-						</div> <!-- row.// -->
-						<div class="row">
-							<div class="item-option-select">
-								<h6>Select Size</h6>
-								<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-								  <label class="btn btn-light">
-								    <input type="radio" name="radio_color"> S
-								  </label>
-								  <label class="btn btn-light active">
-								    <input type="radio" name="radio_color" checked> M
-								  </label>
-								  <label class="btn btn-light">
-								    <input type="radio" name="radio_color"> L
-								  </label>
-								  <label class="btn btn-light">
-								    <input type="radio" name="radio_color"> XL
-								  </label>
-								</div> 
-							</div>
+					<div class="d-flex justify-content-between align-items-center">
+						{% include 'product/partials/product_btn.html' with icon=True %}
+
+						<div class="d-flex justify-content-end align-items-center">
+							<span class="text-muted" onclick="compare.toggle()" data-prodid="{{ item.id }}">
+								<i class="fa fa-balance-scale fa-2x px-4 {% if item.id|to_str in compare.get_product_ids %}text-primary{% endif %}" aria-hidden="true"></i>
+							</span>
+							<span class="text-muted" onclick="wish.toggle()" data-prodid="{{ item.id }}">
+								<i class="fa fa-heart fa-2x px-4 {% if item.id|to_str in wish.get_product_ids %}text-primary{% endif %}" aria-hidden="true"></i>
+							</span>
 						</div>
-						<hr>
-						<div>
-							{% include 'product/partials/product_btn.html' with icon=True %}
-							
-							<a href="{% url 'company:product' company.alias product.cat_slug product.slug %}" class="btn btn-outline-info px-2" role="button">
-								{% translate "View" %} 
-								<span class="px-2"><i class="fa fa-eye" aria-hidden="true"></i></span>
-							</a>
-						</div>
+
+					</div>
 					</article>
 				</main> 
 			</div>

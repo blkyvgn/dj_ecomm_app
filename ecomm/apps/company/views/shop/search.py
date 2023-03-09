@@ -10,8 +10,8 @@ from ecomm.apps.product.models import (
 from django.db.models import F
 
 
-class ShopView(BaseTemplateView):
-    template_name = 'company/pages/shop/shop.html'
+class SearchView(BaseTemplateView):
+    template_name = 'company/pages/shop/search.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

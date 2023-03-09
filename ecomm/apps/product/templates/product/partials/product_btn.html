@@ -3,14 +3,6 @@
 {% load helpers %}
 
 {% if item.units %}
-	<div class="d-flex justify-content-center align-items-center">
-		<span class="text-muted" onclick="compare.toggle()" data-prodid="{{ item.id }}">
-			<i class="fa fa-balance-scale px-4 {% if item.id|to_str in compare.get_product_ids %}text-primary{% endif %}" aria-hidden="true"></i>
-		</span>
-		<span class="text-muted" onclick="wish.toggle()" data-prodid="{{ item.id }}">
-			<i class="fa fa-heart px-4 {% if item.id|to_str in wish.get_product_ids %}text-primary{% endif %}" aria-hidden="true"></i>
-		</span>
-	</div>
 	{% cart_product_qty cart item.id as item_quantity %}
 	<button type="button" class="position-relative btn 
 		{% if item.id in cart.get_product_ids %}
@@ -23,13 +15,13 @@
         data-quantity="{{ item_quantity|default_if_none:'' }}"
     >
 	    	<span id="item-not-in-cart" class="{% if item.id in cart.get_product_ids %}hidden{% endif %}">
-	    		Add to cart
+	    		Add to cart {% if icon %}<i class="text pl-2 fas fa-shopping-cart"></i>{% endif %}
 	    	</span>
 	    	<span id="item-in-cart" class="{% if item.id not in cart.get_product_ids %}hidden{% endif %}">
-	    		Added to cart
+	    		Added to cart {% if icon %}<i class="text pl-2 fas fa-check"></i>{% endif %}
 	    	</span>
 	    	{% if icon %}
-	    		<span class="text pl-2"><i class="fas fa-shopping-cart"></i></span>
+	    		<!-- <span class="text pl-2"><i class="fas fa-shopping-cart"></i></span> -->
 	    	{% endif %}
 		<span class="position-absolute badge rounded-pill bg-success top-right
 		{% if item.id not in cart.get_product_ids %}hidden{% endif %}">

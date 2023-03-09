@@ -7,10 +7,10 @@
 			<div class="aside"><img src="{{ item.product.thumb|or_default_img }}" class="img-sm"></div>
 			<figcaption class="info">
 				<a 
-					href="{% url 'company:product' company.alias item.product.prod_base__category__slug item.product.slug %}" 
+					href="{% url 'company:product' company.alias item.product.prod_base.category.slug item.product.slug %}" 
 					class="title text-dark"
-				>
-                    {{ item.product.prod_base__name|in_lang_or_default }}
+				> 
+                    {{ item.product.prod_base.name|in_lang_or_default }}
 					<small>
 	                    {% if item.product.ext_name %}
 	                        ({{ item.product.ext_name|in_lang_or_default }})
@@ -18,8 +18,20 @@
 	                </small>
 				</a>
 				<p class="text-muted small">
+					{% for attr in item.product.product_type.product_type_attributes.all %}
+	                    {{ attr.name|in_lang_or_default }}
+	                    {% for val in item.product.attribute_values.all %}
+	                    	{% if attr.slug == val.attr_slug %}
+		                    	{% if val.name %}
+	                                {{ val.name|in_lang_or_default }}
+	                            {% else %}
+	                                {{ val.value }}
+	                            {% endif %}
+	                        {% endif %}
+		                {% endfor %}
+					{% endfor %}
 					<br>
-					{% translate "Brand" %}: {{ item.product.brand__name|in_lang_or_default }}
+					{% translate "Brand" %}: {{ item.product.brand.name|in_lang_or_default }}
 				</p>
 			</figcaption>
 		</figure>

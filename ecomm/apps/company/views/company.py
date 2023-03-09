@@ -18,6 +18,7 @@ class HomeView(BaseTemplateView):
                 sold=F('stock_prod__units_sold'),
                 cat_slug=F('prod_base__category__slug'),
             ).\
+            filter(is_default=True).\
             filter_by_params(_or=True, full_name__icontains=filter_arguments['full_name']).\
             distinct().\
             order_by('-sold')[:settings.NUMBER_PER_PAGE]

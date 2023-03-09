@@ -1,7 +1,14 @@
 from decimal import Decimal
 from django.utils.translation import get_language
-from ecomm.apps.product.models import Product
 from ecomm.apps.delivery.models import Delivery
+from ecomm.apps.product.models import ( 
+	Product, 
+	ProductAttributeValue,
+)
+from django.db.models import (
+	Prefetch, 
+	F,
+)
 
 
 class Cart:
@@ -14,13 +21,25 @@ class Cart:
 
 	def __iter__(self):
 		product_ids = self.cart.keys()
-		products = Product.objs.valid().\
-			filter(id__in=product_ids).values(*Product.list_values)
+		# products = Product.objs.valid().\
+		# 	filter(id__in=product_ids).values(*Product.list_values)
+		products = Product.objs.valid().filter(id__in=product_ids).\
+			select_related('prod_base').select_related('prod_base__category').\
+			prefetch_related('product_type__product_type_attributes').\
+			prefetch_related(
+				Prefetch(
+					'attribute_values', 
+					queryset=ProductAttributeValue.objs.valid().annotate(
+						attr_slug=F('product_attribute__slug'),
+					)
+				)
+
+			)
 
 		cart = self.cart.copy()
 
 		for product in products:
-			cart[str(product['id'])]['product'] = product
+			cart[str(product.id)]['product'] = product
 
 		for item in cart.values():
 			item['price'] = Decimal(item['price'])

@@ -4,8 +4,10 @@
 <section class="section-name padding-y-sm">
 	<div class="container">
 		<header class="section-heading">
-			<a href="{% url 'company:shop' company.alias %}" class="btn btn-outline-primary float-right">See all</a>
-			<h3 class="section-title">Popular products</h3>
+			<a href="{% url 'company:shop' company.alias %}" class="btn btn-outline-primary float-right">
+				{% translate "See all" %}
+			</a>
+			<h3 class="section-title">{% translate "Popular products" %}</h3>
 		</header>
 		<div class="row">
 			{% include 'product/popular_list.html' with items=products %}

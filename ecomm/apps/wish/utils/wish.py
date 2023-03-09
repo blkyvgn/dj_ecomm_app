@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.utils.translation import get_language
 from ecomm.apps.product.models import Product
-
+from django.db.models import F
 
 
 class Wish:
@@ -17,7 +17,11 @@ class Wish:
 		product_ids = self.wish
 		products = Product.objs.valid().\
 			filter(id__in=product_ids).\
-			select_related('prod_base')
+			select_related('prod_base').\
+			annotate(
+				units=F('stock_prod__units'),
+				cat_slug=F('prod_base__category__slug'),
+			)
 
 		for prod in products:
 			yield prod
