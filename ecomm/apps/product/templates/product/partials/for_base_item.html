@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load helpers %}
+
+<div class="d-inline">
+<div class="card m-2" style="width: 12rem;">
+	<img class="card-img-top" src="{{ item.thumb|url_or_default }}" alt="Card image cap">
+	<div class="card-body">
+		<h5 class="card-title">
+			<a 
+				href="{% url 'company:product' company.alias item.prod_base.category.slug item.slug %}" 
+				class="title text-dark"
+			>
+				{{ item.prod_base.name|in_lang_or_default }}
+				<small>
+                    {% if item.ext_name %}
+                        ({{ item.ext_name|in_lang_or_default }})
+                    {% endif %}
+                </small>
+			</a>
+		</h5>
+		<p class="card-text text-muted">
+			{% for attr in item.product_type.product_type_attributes.all %}
+                {{ attr.name|in_lang_or_default }}
+                {% for val in item.attribute_values.all %}
+                	{% if attr.slug == val.attr_slug %}
+                    	{% if val.name %}
+                            {{ val.name|in_lang_or_default }}
+                        {% else %}
+                            {{ val.value }}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+			{% endfor %}
+		</p>
+		<p class="card-text">
+			{% if item.sale_price %} 
+				<span class="price">{{ item.sale_price }}</span>
+				<del class="price-old">{{ item.price }}</del>
+			{% else %} 
+				<span class="price">{{ item.price }}</span>
+			{% endif %}
+		</p>
+		<!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+	</div>
+</div>
+</div>

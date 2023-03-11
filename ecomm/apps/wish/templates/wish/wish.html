@@ -11,9 +11,9 @@
 		            {% include 'product/partials/shop_item.html' %}
 		        {% endwith %}
 		        {% endfor %}
-			    <h4 id="wish-list-empty" class="text-center p-3 {% if wish_qty > 0 %}hidden{% endif %}">
-					{% translate "Wish list is empty" %}
-				</h4>
+			    <div id="wish-list-empty" class="card p-3 {% if wish_qty > 0 %}hidden{% endif %} w-100">
+					<h4 class="text-center">{% translate "Wish list is empty" %}</h4>
+				</div>
         	{% endwith %}
 		</div>
 	</div>

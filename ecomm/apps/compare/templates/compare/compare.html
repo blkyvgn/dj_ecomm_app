@@ -11,9 +11,9 @@
                     {% include 'product/partials/compare_item.html' %}
                 {% endwith %}
                 {% endfor %}
-                <h4 id="compare-list-empty" class="text-center p-3 {% if compare_qty > 0 %}hidden{% endif %}">
-                    {% translate "Compare list is empty" %}
-                </h4>
+                <div id="compare-list-empty" class="card p-3 {% if compare_qty > 0 %}hidden{% endif %} w-100">
+                    <h4 class="text-center">{% translate "Compare list is empty" %}</h4>
+                </div>
             {% endwith %}
         </div>
     </div>

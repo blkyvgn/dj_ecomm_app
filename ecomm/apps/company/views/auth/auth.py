@@ -35,10 +35,9 @@ class LoginView(BaseFormView):
 	redirect_authenticated_user = True
 	redirect_field_name = 'next'
 
-	def get_login_url(self):
-		return reverse_lazy('company:login', args = (self.request.company.alias,))
-
 	def get_success_url(self, **kwargs):
+		if self.request.POST.get('next_url', False):
+			return self.request.POST['next_url']
 		return reverse_lazy('company:dashboard', args = (self.request.company.alias,))
 	
 	def form_valid(self, form):
@@ -71,14 +70,19 @@ class RegistrationView(BaseFormView):
 			user.set_password(form.cleaned_data['password'])
 			user.is_active = False
 			user.save()
-
-			Profile.objects.create(
+			user.create_profile(
 				first_name = form.cleaned_data['first_name'],
 				last_name = form.cleaned_data['last_name'],
 				phone = form.cleaned_data['phone'],
 				sex = form.cleaned_data['sex'],
-				account=user,
 			)
+			# Profile.objects.create(
+			# 	first_name = form.cleaned_data['first_name'],
+			# 	last_name = form.cleaned_data['last_name'],
+			# 	phone = form.cleaned_data['phone'],
+			# 	sex = form.cleaned_data['sex'],
+			# 	account=user,
+			# )
 			logger.info(f'REGISTRATION USER: {user.id}')
 			try:
 				send_email_celery_task.delay(

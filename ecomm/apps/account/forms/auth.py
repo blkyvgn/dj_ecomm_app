@@ -16,10 +16,10 @@ class AccountLoginForm(forms.Form):
 	password = forms.CharField(
 		widget=forms.PasswordInput()
 	)
-	next_url = forms.CharField(
-		widget=forms.HiddenInput(), 
-		required=False
-	)
+	# next_url = forms.CharField(
+	# 	widget=forms.HiddenInput(), 
+	# 	required=False
+	# )
 	def clean_password(self):
 		passwd = self.cleaned_data['password']
 		passwd_validation_check(passwd, _('Not valid password'))
@@ -38,7 +38,6 @@ class AccountLoginForm(forms.Form):
 		self.fields['password'].widget.attrs.update(
 			{'class': 'form-control', 'placeholder': _('Password')}
 		)
-
 
 class AccountRegistrationForm(forms.ModelForm):
 	first_name = forms.CharField(

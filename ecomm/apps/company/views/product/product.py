@@ -57,23 +57,43 @@ class ProdictView(BaseDetailView):
 				name=F('attribute_values__name')
 			).distinct()
 
-		prods_attribute_values = Product.objs.valid().company(self.request.company.id).\
-			filter(slug__in=product.prods_slugs.split(',')).\
-			values(
-				attr_slug=F('attribute_values__product_attribute__slug'),
-				val=F('attribute_values__value'),
-				name=F('attribute_values__name')
-			).distinct()
+		# prods_attribute_values = Product.objs.valid().company(self.request.company.id).\
+		# 	filter(slug__in=product.prods_slugs.split(',')).\
+		# 	values(
+		# 		attr_slug=F('attribute_values__product_attribute__slug'),
+		# 		val=F('attribute_values__value'),
+		# 		name=F('attribute_values__name')
+		# 	).distinct()
 
 		context['attributes'] = attributes
 		context['attribute_values'] = attribute_values
-		context['prods_attribute_values'] = prods_attribute_values
+		# context['prods_attribute_values'] = prods_attribute_values
 
 		prod_translation = ProductBaseTranslation.objects.filter(
 			prod_base=product.prod_base, 
 			lang=get_language()
 		).first()
 		setattr(product, 'translate', prod_translation)
+
+		products_for_base = self.model.objs.valid().company(self.request.company.id).\
+			filter(prod_base=product.prod_base).\
+			select_related('brand').\
+			select_related('prod_base').\
+			select_related('prod_base__category').\
+			select_related('product_type').\
+			prefetch_related('product_type__product_type_attributes').\
+			prefetch_related(
+				Prefetch(
+					'attribute_values', 
+					queryset=ProductAttributeValue.objs.valid().annotate(
+						attr_slug=F('product_attribute__slug'),
+					)
+				)
+			).\
+			annotate(
+				units=F('stock_prod__units'),
+			)
+		context['products_for_base'] = products_for_base
 
 		return context
 

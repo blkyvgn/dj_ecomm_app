@@ -154,8 +154,9 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 			self.compare = {alias: list(set(_compare))}
 		self.save(update_fields=['compare'])
 
-	
-
+	def create_profile(self, **kwargs):
+		from ecomm.apps.account.models.profile import Profile
+		Profile.objects.create(account=self, **kwargs)
 
 class AdminManager(BaseUserManager):
 	def get_queryset(self):
