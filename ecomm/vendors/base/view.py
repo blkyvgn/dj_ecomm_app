@@ -2,6 +2,7 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from ecomm.vendors.mixins.data import CommonDataMixin
 from django.views.generic.edit import FormView
 
@@ -9,7 +10,7 @@ from django.views.generic.edit import FormView
 class BaseView(CommonDataMixin, View):
 	pass
 
-class ProtectBaseView(LoginRequiredMixin, CommonDataMixin, View):
+class ProtectBaseView(LoginRequiredMixin, PermissionRequiredMixin, CommonDataMixin, View):
 	pass
 
 class BaseTemplateView(CommonDataMixin, TemplateView):
@@ -18,7 +19,11 @@ class BaseTemplateView(CommonDataMixin, TemplateView):
 		common_data = self.get_common_data(**context)
 		return {**context, **common_data}
 
-class ProtectBaseTemplateView(LoginRequiredMixin, CommonDataMixin, TemplateView):
+class ProtectBaseTemplateView(LoginRequiredMixin, PermissionRequiredMixin, CommonDataMixin, TemplateView):
+
+	def get_login_url(self):
+		return f'grkr/account/login'
+
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		common_data = self.get_common_data(**context)
@@ -30,7 +35,11 @@ class BaseDetailView(CommonDataMixin, DetailView):
 		common_data = self.get_common_data(**context)
 		return {**context, **common_data}
 
-class ProtectBaseDetailView(LoginRequiredMixin, CommonDataMixin, DetailView):
+class ProtectBaseDetailView(LoginRequiredMixin, PermissionRequiredMixin, CommonDataMixin, DetailView):
+
+	def get_login_url(self):
+		return f'grkr/account/login'
+		
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		common_data = self.get_common_data(**context)

@@ -1,0 +1,8 @@
+{% extends company.options.layout|default:'company/layouts/upper.html' %}
+{% load static %} 
+{% load i18n %}
+{% load helpers %}
+
+{% block content %}
+	{% include 'account/auth/login.html' %}
+{% endblock content %} 

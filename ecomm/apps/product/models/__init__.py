@@ -13,3 +13,4 @@ from .prod_type import (
 	ProductTypeAttribute,
 )
 from .media import Media
+from .comment import Comment

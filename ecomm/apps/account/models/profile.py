@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from ecomm.vendors.base.model import EmptyBaseModel
+# from django.db.models.signals import post_save
 from ecomm.vendors.mixins.model import (
 	ImgMixin,
 )
@@ -52,6 +53,7 @@ class Profile(EmptyBaseModel, ImgMixin):
 	account = models.OneToOneField(
 		Account, 
 		on_delete=models.CASCADE,
+		related_name='profile',
 	)
 
 	def __str__(self):
@@ -71,3 +73,12 @@ class Profile(EmptyBaseModel, ImgMixin):
 	class Meta:
 		verbose_name = _('Profile')
 		verbose_name_plural = _('Profiles')
+
+# def create_profile(sender, instance, created, **kwargs):
+# 	if created:
+# 		print(kwargs)
+# 		profile = Profile.created(account=instance, **kwargs)
+# 		profile.save()
+
+# post_save.connect(create_profile, sender=Account)
+

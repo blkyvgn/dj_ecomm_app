@@ -5,7 +5,8 @@ from ecomm.vendors.helpers.validators import (
 	email_validation_check,
 	passwd_validation_check
 )
-from ecomm.apps.account.models import Account
+from ecomm.apps.account.models import Profile
+from ecomm.apps.account.models.account import Customer
 
 
 class AccountLoginForm(forms.Form):
@@ -32,14 +33,47 @@ class AccountLoginForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.fields['email'].widget.attrs.update(
-			{'class': 'form-input', 'placeholder': _('E-mail')}
+			{'class': 'form-control', 'placeholder': _('E-mail')}
 		)
 		self.fields['password'].widget.attrs.update(
-			{'class': 'form-input', 'placeholder': _('Password')}
+			{'class': 'form-control', 'placeholder': _('Password')}
 		)
 
 
 class AccountRegistrationForm(forms.ModelForm):
+	first_name = forms.CharField(
+		label=_('First name'), 
+		min_length=4, 
+		max_length=20, 
+	)
+	last_name = forms.CharField(
+		label=_('First name'), 
+		min_length=4, 
+		max_length=20, 
+	)
+	phone = forms.CharField(
+		label=_('Phone'), 
+		min_length=4, 
+		max_length=20, 
+	)
+	sex = forms.ChoiceField(
+		widget=forms.RadioSelect, 
+		choices=Profile.Sex.choices,
+		initial=Profile.Sex.MALE,
+	)
+	# country = forms.ChoiceField(
+	# 	choices=settings.COUNTRIES,
+	# )
+	# sex = forms.ChoiceField(
+	# 	widget=forms.RadioSelect, 
+	# 	choices=SEX,
+	# 	initial='male',
+	# )
+	# city = forms.CharField(
+	# 	label=_('City'), 
+	# 	min_length=4, 
+	# 	max_length=20, 
+	# )
 	# username = forms.CharField(
 	# 	label='Username', 
 	# 	min_length=4, 
@@ -54,16 +88,16 @@ class AccountRegistrationForm(forms.ModelForm):
 		}
 	)
 	password = forms.CharField(
-		label='Password', 
+		label=_('Password'), 
 		widget=forms.PasswordInput
 	)
 	password2 = forms.CharField(
-		label='Repeat password', 
+		label=_('Repeat password'), 
 		widget=forms.PasswordInput
 	)
 
 	class Meta:
-		model = Account
+		model = Customer
 		# fields = ('username', 'email',)
 		fields = ('email',)
 
@@ -87,17 +121,27 @@ class AccountRegistrationForm(forms.ModelForm):
 
 	def clean_email(self):
 		email = self.cleaned_data['email']
-		if Account.objs.filter(email=email).exists():
+		if Customer.objs.filter(email=email).exists():
 			raise forms.ValidationError(
 				_('Please use another Email, that is already taken'))
 		return email
 
-	def __init__(self, *args, **kwargs):
+	def __init__(self, *args, **kwargs): 
 		super().__init__(*args, **kwargs)
-		# self.fields['username'].widget.attrs.update(
-		# 	{'class': '', 'placeholder': 'Username'})
+		self.fields['first_name'].widget.attrs.update(
+			{'class': 'form-control', 'placeholder': _('First name')})
+		self.fields['last_name'].widget.attrs.update(
+			{'class': 'form-control', 'placeholder': _('Last name')})
+		self.fields['phone'].widget.attrs.update(
+			{'class': 'form-control', 'data-handlers':'keydown:onlyDigital', 'placeholder': _('Phone')})
+		self.fields['sex'].widget.attrs.update(
+			{'class': 'custom-control-input'})
+		# self.fields['country'].widget.attrs.update(
+		# 	{'class': 'form-control', 'id':'inputState'})
+		# self.fields['city'].widget.attrs.update(
+		# 	{'class': 'form-control', 'placeholder': _('City')})
 		self.fields['email'].widget.attrs.update(
-			{'class': 'form-control', 'placeholder': _('E-mail')})
+			{'class': 'form-control', 'type':'email', 'placeholder': _('E-mail')})
 		self.fields['password'].widget.attrs.update(
 			{'class': 'form-control', 'placeholder': _('Password')})
 		self.fields['password2'].widget.attrs.update(

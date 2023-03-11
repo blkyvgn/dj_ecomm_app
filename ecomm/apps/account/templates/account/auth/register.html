@@ -1,58 +1,72 @@
-{% extends company.options.layout|default:'company/layouts/upper.html' %}
 {% load static %} 
 {% load i18n %}
 {% load helpers %}
 
-{% block content %}
 <section class="section-content padding-y">
 	<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
       	<article class="card-body">
 		<header class="mb-4"><h4 class="card-title">{% translate "Sign up" %}</h4></header>
 			{% form_errors form.non_field_errors %}
-			<form action="{% url 'account:registration' company.alias %}" method="POST">
+			<form action="{% url 'company:registration' company.alias %}" method="POST">
 				{% csrf_token %}
 				<div class="form-row">
 					<div class="col form-group">
 						<label>{% translate "First name" %}</label>
-					  	<input type="text" class="form-control" placeholder="">
+					  	{% form_errors form.first_name.errors %}
+						{{ form.first_name }}
 					</div>
 					<div class="col form-group">
 						<label>{% translate "Last name" %}</label>
-					  	<input type="text" class="form-control" placeholder="">
+					  	{% form_errors form.last_name.errors %}
+						{{ form.last_name }}
 					</div>
 				</div>
-				<div class="form-group">
+				{% comment %}
+				<!-- <div class="form-group">
 					<label>{% translate "Email" %}</label>
 					{% form_errors form.email.errors %}
 					{{ form.email }}
 					<small class="form-text text-muted">{% translate "We'll never share your email with anyone else." %}</small>
 				</div>
 				<div class="form-group">
-					<label class="custom-control custom-radio custom-control-inline">
-					  <input class="custom-control-input" checked="" type="radio" name="gender" value="option1">
-					  <span class="custom-control-label"> {% translate "Male" %} </span>
-					</label>
-					<label class="custom-control custom-radio custom-control-inline">
-					  <input class="custom-control-input" type="radio" name="gender" value="option2">
-					  <span class="custom-control-label"> {% translate "Female" %} </span>
-					</label>
+				    {% for radio in form.sex %}
+				    <label class="custom-control custom-radio custom-control-inline" for="{{ radio.id_for_label }}">
+				        {{ radio.tag }}
+				        <span class="custom-control-label">{{ radio.choice_label }}</span>
+				    </label>
+				    {% endfor %}
 				</div>
 				<div class="form-row">
 					<div class="form-group col-md-6">
 					  <label>{% translate "City" %}</label>
-					  <input type="text" class="form-control">
+					  {% form_errors form.city.errors %}
+					{{ form.city }}
 					</div>
 					<div class="form-group col-md-6">
 					  <label>{% translate "Country" %}</label>
-					  <select id="inputState" class="form-control">
-					    <option> Choose...</option>
-					      <option>Uzbekistan</option>
-					      <option>Russia</option>
-					      <option selected="">United States</option>
-					      <option>India</option>
-					      <option>Afganistan</option>
-					  </select>
+					  {{ form.country }}
 					</div>
+				</div> -->
+				{% endcomment %}
+				<div class="form-row">
+					<div class="col form-group">
+						<label>{% translate "Email" %}</label>
+					  	{% form_errors form.email.errors %}
+						{{ form.email }}
+					</div>
+					<div class="col form-group">
+						<label>{% translate "Phone" %}</label>
+					  	{% form_errors form.phone.errors %}
+						{{ form.phone }}
+					</div>
+				</div>
+				<div class="form-group">
+				    {% for radio in form.sex %}
+				    <label class="custom-control custom-radio custom-control-inline" for="{{ radio.id_for_label }}">
+				        {{ radio.tag }}
+				        <span class="custom-control-label">{{ radio.choice_label }}</span>
+				    </label>
+				    {% endfor %}
 				</div>
 				<div class="form-row">
 					<div class="form-group col-md-6">
@@ -75,4 +89,3 @@
     <p class="text-center mt-4">{% translate "Have an account?" %} <a href="">{% translate "Log In" %}</a></p>
     <br><br>
 </section>
-{% endblock content %} 

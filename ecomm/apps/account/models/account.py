@@ -28,6 +28,7 @@ class AccountManager(BaseUserManager):
 		extra_fields.setdefault('is_staff', True)
 		extra_fields.setdefault('is_superuser', True)
 		extra_fields.setdefault('is_active', True)
+		extra_fields.setdefault('is_verified', True)
 		extra_fields.setdefault('type', Account.Type.ADMIN)
 
 		if extra_fields.get('is_staff') is not True:
@@ -51,13 +52,16 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 	)
 
 	email = models.EmailField(
-		unique=True
+		unique=True,
 	)
 	is_staff = models.BooleanField(
-		default=False
+		default=False,
 	)
 	is_active = models.BooleanField(
-		default=True
+		default=True,
+	)
+	is_verified = models.BooleanField(
+		default=False,
 	)
 	wish = models.JSONField(
 		null=True, 
@@ -78,9 +82,9 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 		verbose_name_plural =  _('Accounts')
 		ordering = ('-created_at',)
 		permissions = [
-			('view_dashboard', 'View page: Dashboard'),
-			('change_password', 'Change account password'),
-			('allow_chat', 'Allow chat'),
+			('view_dashboard',   'View page: Dashboard'),
+			('change_password',  'Change account password'),
+			('allow_chat',       'Allow chat'),
 		]
 		indexes = [
 			models.Index(fields=['email',]),
@@ -149,6 +153,7 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 		else:
 			self.compare = {alias: list(set(_compare))}
 		self.save(update_fields=['compare'])
+
 	
 
 

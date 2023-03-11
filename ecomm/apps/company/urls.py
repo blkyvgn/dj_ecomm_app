@@ -1,6 +1,11 @@
 from django.urls import path, include
 from ecomm.apps.company.views import company
-from ecomm.apps.company.views.shop import shop, search
+from ecomm.apps.company.views.auth import auth
+from ecomm.apps.company.views.shop import (
+	shop, 
+	search, 
+	dashboard,
+)
 from ecomm.apps.company.views.category import category
 from ecomm.apps.company.views.product import product
 from ecomm.apps.company.views.cart import cart
@@ -9,15 +14,24 @@ from ecomm.apps.company.views.compare import compare
 from ecomm.apps.compare.views import acts as compare_acts
 from ecomm.apps.company.views.wish import wish
 from ecomm.apps.wish.views import acts as wish_acts
+from ecomm.apps.company.views.order import order
 
 app_name = 'company'
 
 urlpatterns = [
 	path('home/', company.HomeView.as_view(), name='home'),
+	path('account/', include([
+		path('registration/', auth.RegistrationView.as_view(), name='registration'),
+		path('login/', auth.LoginView.as_view(), name='login'),
+		path('logout/', auth.LogoutView.as_view(), name='logout'),
+	])),
 	path('shop/', include([
 		path('', shop.ShopView.as_view(), name='shop'),
-		path('search', search.SearchView.as_view(), name='search'),
+		path('search/', search.SearchView.as_view(), name='search'),
+		path('dashboard/', dashboard.DashboardView.as_view(), name='dashboard'),
 
+		path('order/list/', order.ListView.as_view(), name='order_list'),
+		
 		path('cart/', cart.CartView.as_view(), name='cart'),
 		path('cart/add/', cart_acts.AddView.as_view(), name='add_cart'),
 		path('cart/update/', cart_acts.UpdateView.as_view(), name='update_cart'),

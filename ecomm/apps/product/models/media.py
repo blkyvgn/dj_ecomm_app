@@ -31,7 +31,7 @@ class Media(BaseModel, TimestampsMixin, HelpersMixin, ImgMixin):
 	product = models.ForeignKey(
 		'Product',
 		on_delete=models.PROTECT,
-		related_name="media",
+		related_name='media',
 	)
 	company = models.ForeignKey(
 		'company.Company',

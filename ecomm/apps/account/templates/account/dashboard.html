@@ -1,0 +1,11 @@
+{% load static %} 
+{% load i18n %}
+{% load helpers %}
+
+<section class="section-conten padding-y" style="min-height:84vh">
+	<div class="mx-auto" style="max-width: 1000px; margin-top:80px;">
+		<div class="cart m-2">
+			<a href="{% url 'company:order_list' company.alias %}">Orders</a>
+		</div>
+	</div>
+</section>

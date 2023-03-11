@@ -93,7 +93,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecomm.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -103,7 +102,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'dj_ecomm_app_db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -123,7 +121,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -141,6 +138,9 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+COUNTRIES = data.LIST_OF_COUNTRIES
+CURRENCIES = data.LIST_OF_CURRENCIES
 
 # Static and media files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

@@ -17,7 +17,6 @@ urlpatterns = [
 	path('admin/', admin.site.urls),
 
 	path('<slug:alias>/', include([
-		path('account/', include('ecomm.apps.account.urls', namespace='account')),
 		path('', include('ecomm.apps.company.urls', namespace='company')),
 	])),
 	re_path(r'^i18n/', include('django.conf.urls.i18n')),

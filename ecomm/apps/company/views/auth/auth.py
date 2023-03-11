@@ -4,7 +4,12 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from ecomm.vendors.helpers.mail import get_activate_account_mail_body
 from ecomm.apps.company.tasks.mail import send_email_celery_task
-from ecomm.vendors.base.view import BaseFormView
+from ecomm.apps.account.models import Profile
+from django.contrib.auth import get_user_model
+from ecomm.vendors.base.view import ( 
+	BaseFormView,
+	ProtectBaseView,
+)
 from ecomm.apps.account.forms.auth import (
 	AccountRegistrationForm,
 	AccountLoginForm,
@@ -21,36 +26,38 @@ from django.contrib.auth import (
 )
 import logging
 logger = logging.getLogger('main')
+Account = get_user_model()
+
 
 class LoginView(BaseFormView):
-	template_name = 'account/auth/login.html'
+	template_name = 'company/pages/account/auth/login.html'
 	form_class = AccountLoginForm
 	redirect_authenticated_user = True
+	redirect_field_name = 'next'
 
-	def get_success_url(self, **kwargs): 
-		return reverse_lazy('company:home', args = (self.request.company.alias,))
+	def get_login_url(self):
+		return reverse_lazy('company:login', args = (self.request.company.alias,))
+
+	def get_success_url(self, **kwargs):
+		return reverse_lazy('company:dashboard', args = (self.request.company.alias,))
 	
 	def form_valid(self, form):
-		user = form.save(commit=False)
-		email = loginForm.cleaned_data['email']
-		password = loginForm.cleaned_data['password']
-		user = authenticate(request, email=email, password=password)
+		email = form.cleaned_data['email']
+		password = form.cleaned_data['password']
+		user = authenticate(self.request, email=email, password=password)
 		if user is not None:
-			login(request, user)
+			login(self.request, user)
 			user.is_active = True
-			user.save()
-			if self.request.POST['next_url']:
-				return redirect(self.request.POST['next_url'])
-			return redirect('account:dashboard')
+			user.save(update_fields=['is_active'])
+		else:
+			messages.error(self.request, 
+				_('Not found account'), extra_tags='alert-danger'
+			)
 		return super().form_valid(form)
-
-	def invalid_form(self, form):
-		messages.error(self.request, _('Error authenticate user'), extra_tags='alert-success')
-		return super().invalid_form(form)
 
 
 class RegistrationView(BaseFormView):
-	template_name = 'account/auth/register.html'
+	template_name = 'company/pages/account/auth/register.html'
 	form_class = AccountRegistrationForm
 	redirect_authenticated_user = True
 
@@ -64,8 +71,15 @@ class RegistrationView(BaseFormView):
 			user.set_password(form.cleaned_data['password'])
 			user.is_active = False
 			user.save()
+
+			Profile.objects.create(
+				first_name = form.cleaned_data['first_name'],
+				last_name = form.cleaned_data['last_name'],
+				phone = form.cleaned_data['phone'],
+				sex = form.cleaned_data['sex'],
+				account=user,
+			)
 			logger.info(f'REGISTRATION USER: {user.id}')
-			# send registration email
 			try:
 				send_email_celery_task.delay(
 					user.email, 
@@ -79,3 +93,15 @@ class RegistrationView(BaseFormView):
 					_('E-Mail not sent'), extra_tags='alert-warning'
 				)
 		return super().form_valid(form)
+
+
+class LogoutView(ProtectBaseView):
+	permission_required = []
+
+	def get(self, request, *args, **kwargs):
+		user = get_object_or_404(Account, email=request.user.email)
+		user.is_active = False
+		user.save(update_fields=['is_active'])
+		logout(request)
+		logger.info(f'LOGOUT USER: {user.id}')
+		return redirect('company:home', self.request.company.alias)
