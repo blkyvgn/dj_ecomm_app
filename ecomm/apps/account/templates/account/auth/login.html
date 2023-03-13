@@ -7,7 +7,7 @@
       	<div class="card-body">
       	<h4 class="card-title mb-4">{% translate "Sign in" %}</h4>
       	{% form_errors form.non_field_errors %}
-      	<form action="{% url 'company:login' company.alias %}" method="POST">
+      	<form action="{% url 'company:account_login' company.alias %}" method="POST">
       		{% csrf_token %}
           	<div class="form-group">
           		{% form_errors form.email.errors %}
@@ -18,7 +18,7 @@
 				{{ form.password }}
           	</div>
           	<div class="form-group">
-          		<a href="#" class="float-right">{% translate "Forgot password?" %}</a> 
+          		<a href="{% url 'company:account_reset_passwd' company.alias %}" class="float-right">{% translate "Forgot password?" %}</a> 
           	</div>
           	<input type="hidden" name="next_url" value="{{ next_url|default:'' }}">
           	<div class="form-group">
@@ -27,6 +27,8 @@
       	</form>
       	</div>
     </div>
-    <p class="text-center mt-4">{% translate "Don't have account?" %} <a href="#">{% translate "Sign up" %}</a></p>
+    <p class="text-center mt-4">{% translate "Don't have account?" %}
+    	<a href="{% url 'company:account_registration' company.alias %}">{% translate "Sign up" %}</a>
+    </p>
     <br><br>
 </section>

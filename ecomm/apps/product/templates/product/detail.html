@@ -100,16 +100,13 @@
 				</main> 
 			</div>
 		</div>
-		<br>
-		<section class="section-content padding-y bg">
-			<div class="container">
-				<div class="row horizontal-scroll p-2">
-					{% for for_base_prod in products_for_base %}
-						{% include 'product/partials/for_base_item.html' with item=for_base_prod %}
-					{% endfor %}
-				</div>
+		<div class="card mt-1">
+			<div class="row horizontal-scroll p-2">
+				{% for for_base_prod in products_for_base %}
+					{% include 'product/partials/for_base_item.html' with item=for_base_prod %}
+				{% endfor %}
 			</div>
-		</section>
+		</div>
 		<br>
 		<section class="section-content padding-y bg">
 			<div class="container">

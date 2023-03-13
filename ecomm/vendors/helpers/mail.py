@@ -31,6 +31,7 @@ def get_mail_body(request, user, template, subject='', uid_and_token=False, **kw
 	data = {
 		'user':user, 
 		'domain': current_site.domain,
+		'company_alias': request.company.alias,
 		**kwargs,
 	}
 	if uid_and_token:
@@ -55,20 +56,19 @@ def get_activate_account_mail_body(request, user, lang=get_language()):
 		pass
 
 def get_reset_passwd_mail_body(request, user, lang=get_language()):
-	try:
-		template_file = get_mail_template(f'src/mail/reset_password/{lang}_reset_password.html') 
-		subject=_('Reset password')
-		mail_body = get_mail_body(
-			request, 
-			user, 
-			template_file, 
-			subject=subject, 
-			uid_and_token=True,
-		)
-		return {'subject': subject, 'message': mail_body}
-	except:
-		pass
-
+	# try:
+	template_file = get_mail_template(f'src/mail/reset_password/{lang}_reset_password.html') 
+	subject=_('Reset password')
+	mail_body = get_mail_body(
+		request, 
+		user, 
+		template_file, 
+		subject=subject, 
+		uid_and_token=True,
+	)
+	return {'subject': subject, 'message': mail_body}
+	# except:
+	# 	pass
 
 def sender(user_email, subject, message):
 	send_mail(

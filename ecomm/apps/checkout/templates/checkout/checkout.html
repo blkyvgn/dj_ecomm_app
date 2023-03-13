@@ -1,0 +1,135 @@
+{% load static %} 
+{% load i18n %}
+{% load helpers %}
+
+<section class="section-content padding-y bg">
+	<div class="container">
+		<div class="row">
+			<aside class="col-lg-6">
+				<div class="card">
+					<h4 class="text-center p-2">{% translate "Billing address" %}</h4>
+					<form class="p-3" action="">
+						<div class="form-row">
+							<div class="col form-group">
+								<label for="">{% translate "First name" %}</label>
+								{% form_errors form.first_name.errors %}
+								{{ form.first_name }}
+							</div>
+							<div class="col form-group">
+								<label for="">{% translate "Last name" %}</label>
+								{% form_errors form.last_name.errors %}
+								{{ form.last_name }}
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="col form-group">
+								<label for="">{% translate "Email" %}</label>
+								{% form_errors form.email.errors %}
+								{{ form.email }}
+							</div>
+							<div class="col form-group">
+								<label for="">{% translate "Phone" %}</label>
+								{% form_errors form.phone.errors %}
+								{{ form.phone }}
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="col form-group">
+								<label for="">{% translate "Address line" %}</label>
+								{% form_errors form.address_line.errors %}
+								{{ form.address_line }}
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="col form-group">
+								<label for="">{% translate "Address line 2" %}</label>
+								{% form_errors form.address_line_2.errors %}
+								{{ form.address_line_2 }}
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="col form-group">
+								<label for="">{% translate "City" %}</label>
+								{% form_errors form.city.errors %}
+								{{ form.city }}
+							</div>
+							<div class="col form-group">
+								<label for="">{% translate "State" %}</label>
+								{% form_errors form.state.errors %}
+								{{ form.state }}
+							</div>
+							<div class="col form-group">
+								<label for="">{% translate "Country" %}</label>
+								{{ form.country }}
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="col form-group">
+								<label for="">{% translate "Order note" %}</label>
+								{% form_errors form.order_note.errors %}
+								{{ form.order_note }}
+							</div>
+						</div>
+					</form>
+				</div>
+			</aside>
+			<aside class="col-lg-6">
+				<div class="card">
+					<div class="card-body">
+					<table id="cart-table" class="table table-borderless table-shopping-cart">
+						<thead class="text-muted">
+						<tr class="small text-uppercase">
+						  <th scope="col">{% translate "Product" %}</th>
+						  <th scope="col" width="120">{% translate "Quantity" %}</th>
+						  <th scope="col" width="120">{% translate "Price" %}</th>
+						</tr>
+						</thead>
+						<tbody>
+						{% for item in cart %}
+							{% with prod=item %}
+								{% include 'product/partials/checkout_item.html' with item=prod %}
+							{% endwith %}
+						{% endfor %}
+						</tbody>
+					</table>
+
+					<dl>
+						<dt>{% translate "Total quantity" %}</dt>
+						<dd>
+							<span class="mr-4">{% translate "Items" %}:
+					            <span id="cart-quantity">
+					                {% with total_qty=cart|length %}
+					                    {% if total_qty > 0 %}
+					                        {{ total_qty }}
+					                    {% endif %}
+					                {% endwith %} 
+					            </span>
+				          	</span>
+						</dd>
+					</dl>
+					<dl class="dlist-align">
+						<dt>{% translate "Total price:" %}</dt>
+						<dd id="cart-total" class="text-right">${{ cart.get_total_price }}</dd>
+					</dl>
+					<dl class="dlist-align">
+						<dt>{% translate "Delivery:" %}</dt>
+						<dd id="cart-delivery" class="text-right">${{ cart.get_delivery_price }}</dd>
+					</dl>
+					<dl class="dlist-align">
+						<dt>{% translate "Total:" %}</dt>
+						<dd class="text-right text-dark b"><strong id="cart-subtotal">${{ cart.get_subtotal_price }}</strong></dd>
+					</dl>
+					<hr>
+					<p class="text-center mb-3">
+						<img src="{% static 'company/images/misc/payments.png' %}" height="26">
+					</p>
+					<a href="./place-order.html" class="btn btn-primary btn-block">{% translate "Place order" %}</a>
+					<a href="{% url 'company:shop' company.alias %}" class="btn btn-light btn-block">
+						{% translate "Continue Shopping" %}
+					</a>
+					</div>
+				</div>
+			</aside>
+		</div> 
+	</div>
+</section>

@@ -1,8 +1,12 @@
 from django.db import models
 from django.conf import settings
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from ecomm.vendors.base.model import BaseModel
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import Permission
 from django.contrib.auth.models import (
 	AbstractBaseUser, 
 	PermissionsMixin,
@@ -158,6 +162,28 @@ class Account(AbstractBaseUser, PermissionsMixin, BaseModel, TimestampsMixin, So
 		from ecomm.apps.account.models.profile import Profile
 		Profile.objects.create(account=self, **kwargs)
 
+	def set_permissions(self):
+		content_type = ContentType.objects.get_for_model(Account)
+		accont_perms = Permission.objects.filter(content_type=content_type)
+		for perm in accont_perms:
+			self.user_permissions.add(perm)
+
+	def get_checkout_form_initialize_data(self):
+		initialize_data = {}
+		initialize_data['email'] = self.email
+		if (hasattr(self, 'profile')):
+			initialize_data['first_name'] = self.profile.first_name
+			initialize_data['last_name'] = self.profile.last_name
+			initialize_data['phone'] = self.profile.phone
+		default_address = self.addresses.filter(is_default=True).first()
+		if default_address:
+			initialize_data['address_line'] = default_address.address_line
+			initialize_data['address_line_2'] = default_address.address_line_2
+			initialize_data['city'] = default_address.town_city
+			initialize_data['state'] = default_address.state
+			initialize_data['country'] = default_address.country
+		return initialize_data
+
 class AdminManager(BaseUserManager):
 	def get_queryset(self):
 		return super().get_queryset().filter(type=Account.Type.ADMIN)
@@ -184,6 +210,12 @@ class Employee(Account):
 	class Meta:
 		proxy = True
 
+	def set_permissions(self):
+		content_type = ContentType.objects.get_for_model(Account)
+		accont_perms = Permission.objects.filter(content_type=content_type)
+		for perm in accont_perms:
+			self.user_permissions.add(perm)
+
 	def save(self, *args, **kwargs):
 		self.is_staff = True
 		self.type = Account.Type.EMPLOYEE
@@ -199,6 +231,12 @@ class Customer(Account):
 
 	class Meta:
 		proxy = True
+
+	def set_permissions(self):
+		content_type = ContentType.objects.get_for_model(Account)
+		accont_perms = Permission.objects.filter(content_type=content_type)
+		for perm in accont_perms:
+			self.user_permissions.add(perm)
 
 	def save(self, *args, **kwargs):
 		self.is_staff = False

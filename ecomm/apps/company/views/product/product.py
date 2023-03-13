@@ -14,7 +14,7 @@ from ecomm.apps.product.models import (
 from django.http import Http404
 from django.db.models import (
 	Prefetch,
-	F,
+	F, Q,
 )
 
 
@@ -77,6 +77,7 @@ class ProdictView(BaseDetailView):
 
 		products_for_base = self.model.objs.valid().company(self.request.company.id).\
 			filter(prod_base=product.prod_base).\
+			filter(~Q(slug=product.slug)).\
 			select_related('brand').\
 			select_related('prod_base').\
 			select_related('prod_base__category').\

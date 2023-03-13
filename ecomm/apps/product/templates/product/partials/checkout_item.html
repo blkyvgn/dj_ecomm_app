@@ -1,0 +1,64 @@
+{% load i18n %}
+{% load helpers %}
+
+<tr id="cart-prod-{{ item.product.id }}">
+	<td>
+		<figure class="itemside align-items-center">
+			<div class="aside"><img src="{{ item.product.thumb|or_default_img }}" class="img-sm"></div>
+			<figcaption class="info">
+				<a 
+					href="{% url 'company:product' company.alias item.product.prod_base.category.slug item.product.slug %}" 
+					class="title text-dark"
+				> 
+                    {{ item.product.prod_base.name|in_lang_or_default }}
+					<small>
+	                    {% if item.product.ext_name %}
+	                        ({{ item.product.ext_name|in_lang_or_default }})
+	                    {% endif %}
+	                </small>
+				</a>
+				<p class="text-muted small">
+					{% for attr in item.product.product_type.product_type_attributes.all %}
+	                    {{ attr.name|in_lang_or_default }}
+	                    {% for val in item.product.attribute_values.all %}
+	                    	{% if attr.slug == val.attr_slug %}
+		                    	{% if val.name %}
+	                                {{ val.name|in_lang_or_default }}
+	                            {% else %}
+	                                {{ val.value }}
+	                            {% endif %}
+	                        {% endif %}
+		                {% endfor %}
+					{% endfor %}
+					<br>
+					{% translate "Brand" %}: {{ item.product.brand.name|in_lang_or_default }}
+				</p>
+			</figcaption>
+		</figure>
+	</td>
+	<td> 
+		<div class="col"> 
+			<div class="input-group input-spinner">
+				<div class="input-group-prepend">
+					{% cart_product_qty cart item.product.id as prod_quantity %}
+					<input id="prod-quantity-{{ item.product.id }}" type="text" class="form-control" 
+                        data-prodid="{{ item.product.id }}" 
+                        data-quantity="{{ prod_quantity|default_if_none:'' }}"
+						value="{{ prod_quantity|default_if_none:'' }}" disabled>
+				</div>
+			</div>
+		</div>
+	</td>
+	<td> 
+		<div class="price-wrap"> 
+			<var id="prod-total-{{ item.product.id }}" class="price">{{ item.total_price }}</var> 
+			<small class="text-muted">
+				{% if item.product.sale_price %} 
+					{{ item.product.sale_price }} {% translate "each" %}
+				{% else %} 
+					{{ item.product.price }} {% translate "each" %}
+				{% endif %}
+			</small> 
+		</div>
+	</td>
+</tr>

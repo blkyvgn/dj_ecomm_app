@@ -31,5 +31,5 @@ class AccountBackend(ModelBackend):
 				return user
 			return None
 		except Account.DoesNotExist:
-			logger.info(f'{self.LOGIN_USER_ERROR}: {email}')
+			logger.info(f'{self.LOGIN_USER_ERROR}: {user_id}')
 			return None

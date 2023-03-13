@@ -26,7 +26,7 @@ class AddView(BaseView):
 class DeleteView(BaseView):
 	def get(self, request, *args, **kwargs):
 		comparison = Compare(request)
-		product = get_object_or_404(Product, slug=prod_slug)
+		product = get_object_or_404(Product, slug=kwargs['prod_slug'])
 		comparison.delete(product.id)
 		if request.user.is_authenticated:
 			request.user.update_compare(product.id, act='remove', alias=request.company.alias)
@@ -36,9 +36,9 @@ class DeleteView(BaseView):
 		comparison = Compare(request)
 		result = json.loads(request.body)
 		item_id = int(result['id'])
-		product = get_object_or_404(Product, id=item_id)
+		product = get_object_or_404(Product, id=kwargs['item_id'])
 		comparison.delete(product.id)
 		comparison_filling = len(comparison)
 		if request.user.is_authenticated:
 			request.user.update_compare(product.id, act='remove', alias=request.company.alias)
-		return JsonResponse({'quantity': comparison_filling, 'id':item_id})
+		return JsonResponse({'quantity': comparison_filling, 'id':product.id})

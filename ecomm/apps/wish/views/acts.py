@@ -26,7 +26,7 @@ class AddView(BaseView):
 class DeleteView(BaseView):
 	def get(self, request, *args, **kwargs):
 		wish = Wish(request)
-		product = get_object_or_404(Product, slug=prod_slug)
+		product = get_object_or_404(Product, slug=kwargs['prod_slug'])
 		wish.delete(product.id)
 		if request.user.is_authenticated:
 			request.user.update_wish(product.id, act='remove', alias=request.company.alias)
@@ -36,9 +36,9 @@ class DeleteView(BaseView):
 		wish = Wish(request)
 		result = json.loads(request.body)
 		item_id = int(result['id'])
-		product = get_object_or_404(Product, id=item_id)
+		product = get_object_or_404(Product, id=kwargs['item_id'])
 		wish.delete(product.id)
 		wish_filling = len(wish)
 		if request.user.is_authenticated:
 			request.user.update_wish(product.id, act='remove', alias=request.company.alias)
-		return JsonResponse({'quantity': wish_filling, 'id':item_id})
+		return JsonResponse({'quantity': wish_filling, 'id':product.id})

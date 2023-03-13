@@ -2,7 +2,7 @@
 {% load helpers %}
 
 <div class="d-inline">
-<div class="card m-2" style="width: 12rem;">
+<div class="card m-1" style="width: 12rem;">
 	<img class="card-img-top" src="{{ item.thumb|url_or_default }}" alt="Card image cap">
 	<div class="card-body">
 		<h5 class="card-title">
@@ -20,7 +20,8 @@
 		</h5>
 		<p class="card-text text-muted">
 			{% for attr in item.product_type.product_type_attributes.all %}
-                {{ attr.name|in_lang_or_default }}
+				<div>
+                {{ attr.name|in_lang_or_default }} : 
                 {% for val in item.attribute_values.all %}
                 	{% if attr.slug == val.attr_slug %}
                     	{% if val.name %}
@@ -30,6 +31,7 @@
                         {% endif %}
                     {% endif %}
                 {% endfor %}
+            	</div>
 			{% endfor %}
 		</p>
 		<p class="card-text">

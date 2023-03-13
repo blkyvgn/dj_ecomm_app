@@ -1,6 +1,9 @@
 from django.urls import path, include
 from ecomm.apps.company.views import company
-from ecomm.apps.company.views.auth import auth
+from ecomm.apps.company.views.auth import (
+	auth,
+	passwd,
+)
 from ecomm.apps.company.views.shop import (
 	shop, 
 	search, 
@@ -15,22 +18,29 @@ from ecomm.apps.compare.views import acts as compare_acts
 from ecomm.apps.company.views.wish import wish
 from ecomm.apps.wish.views import acts as wish_acts
 from ecomm.apps.company.views.order import order
+from ecomm.apps.company.views.checkout import checkout 
 
 app_name = 'company'
 
 urlpatterns = [
 	path('home/', company.HomeView.as_view(), name='home'),
 	path('account/', include([
-		path('registration/', auth.RegistrationView.as_view(), name='registration'),
-		path('login/', auth.LoginView.as_view(), name='login'),
-		path('logout/', auth.LogoutView.as_view(), name='logout'),
+		path('registration/', auth.RegistrationView.as_view(), name='account_registration'),
+		path('login/', auth.LoginView.as_view(), name='account_login'),
+		path('logout/', auth.LogoutView.as_view(), name='account_logout'),
+		path('activate/<slug:uidb64>/<slug:token>/', auth.ActivateView.as_view(), name='account_activate'),
+		path('reset/passwd/', passwd.ResetPasswdView.as_view(), name='account_reset_passwd'),
+		path('change/passwd/', passwd.ChangePasswdView.as_view(), name='account_change_passwd'),
+		path('confirm/passwd/<slug:uidb64>/<slug:token>/', passwd.ConfirmPasswdView.as_view(), name='account_confirm_passwd'),
+
+		path('dashboard/', dashboard.DashboardView.as_view(), name='account_dashboard'),
+		path('checkout/', checkout.CheckoutView.as_view(), name='account_checkout'),
+
+		path('order/list/', order.ListView.as_view(), name='account_order_list'),
 	])),
 	path('shop/', include([
 		path('', shop.ShopView.as_view(), name='shop'),
 		path('search/', search.SearchView.as_view(), name='search'),
-		path('dashboard/', dashboard.DashboardView.as_view(), name='dashboard'),
-
-		path('order/list/', order.ListView.as_view(), name='order_list'),
 		
 		path('cart/', cart.CartView.as_view(), name='cart'),
 		path('cart/add/', cart_acts.AddView.as_view(), name='add_cart'),

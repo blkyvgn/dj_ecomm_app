@@ -14,7 +14,7 @@ class BaseView(CommonDataMixin, View):
 class ProtectBaseView(CommonDataMixin, LoginRequiredMixin, PermissionRequiredMixin, View):
 	
 	def get_login_url(self):
-		return reverse_lazy('company:login', args = (self.request.company.alias,))
+		return reverse_lazy('company:account_login', args = (self.request.company.alias,))
 
 class BaseTemplateView(CommonDataMixin, TemplateView):
 	def get_context_data(self, **kwargs):
@@ -23,9 +23,8 @@ class BaseTemplateView(CommonDataMixin, TemplateView):
 		return {**context, **common_data}
 
 class ProtectBaseTemplateView(CommonDataMixin, LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
-
 	def get_login_url(self):
-		return reverse_lazy('company:login', args = (self.request.company.alias,))
+		return reverse_lazy('company:account_login', args = (self.request.company.alias,))
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -39,9 +38,8 @@ class BaseDetailView(CommonDataMixin, DetailView):
 		return {**context, **common_data}
 
 class ProtectBaseDetailView(CommonDataMixin, LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-
 	def get_login_url(self):
-		return reverse_lazy('company:login', args = (self.request.company.alias,))
+		return reverse_lazy('company:account_login', args = (self.request.company.alias,))
 		
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -53,3 +51,13 @@ class BaseFormView(CommonDataMixin, FormView):
 		context = super().get_context_data(**kwargs)
 		common_data = self.get_common_data(**context)
 		return {**context, **common_data}
+
+class ProtectBaseFormView(CommonDataMixin, LoginRequiredMixin, PermissionRequiredMixin, FormView):
+	def get_login_url(self):
+		return reverse_lazy('company:account_login', args = (self.request.company.alias,))
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		common_data = self.get_common_data(**context)
+		return {**context, **common_data}
+

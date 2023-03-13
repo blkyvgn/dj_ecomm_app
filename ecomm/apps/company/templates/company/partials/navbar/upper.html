@@ -93,18 +93,18 @@
 							{% if request.user.is_authenticated %}
 								<small class="title text-muted text-center">{{ request.user.email }}</small>
 								<div> 
-									<a href="{% url 'company:dashboard' company.alias %}">
+									<a href="{% url 'company:account_dashboard' company.alias %}">
 										{% translate "Dashboard" %}
 									</a> 
 									<span class="dark-transp"> | </span>
-									<a href="{% url 'company:logout' company.alias %}">{% translate "Logout" %}</a>
+									<a href="{% url 'company:account_logout' company.alias %}">{% translate "Logout" %}</a>
 								</div>
 							{% else %}
 								<small class="title text-muted text-center">{% translate "Welcome guest!" %}</small>
 								<div> 
-									<a href="{% url 'company:login' company.alias %}">{% translate "Sign in" %}</a> 
+									<a href="{% url 'company:account_login' company.alias %}">{% translate "Sign in" %}</a> 
 									<span class="dark-transp"> | </span>
-									<a href="{% url 'company:registration' company.alias %}">{% translate "Register" %}</a>
+									<a href="{% url 'company:account_registration' company.alias %}">{% translate "Register" %}</a>
 								</div> 
 							{% endif %}
 						</div>

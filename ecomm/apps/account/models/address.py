@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from ecomm.vendors.base.model import BaseModel
 from django.contrib.auth import get_user_model
@@ -9,12 +10,27 @@ Account = get_user_model()
 
 
 class Address(BaseModel, TimestampsMixin):
-	line = models.CharField(
+	address_line = models.CharField(
 		max_length=255,
 	)
+	address_line_2 = models.CharField(
+		max_length=255,
+		null=True,
+		blank=True,
+	)
 	town_city = models.CharField(
-		_('Town/City/State'), 
-		max_length=150
+		_('Town/City'), 
+		max_length=150,
+	)
+	state = models.CharField(
+		max_length=50,
+		null=True,
+		blank=True,
+	)
+	country = models.CharField(
+		max_length=8, 
+		choices=settings.COUNTRIES, 
+		default=settings.COUNTRIES[0]
 	)
 	phone = models.CharField(
 		max_length=50,
@@ -26,15 +42,18 @@ class Address(BaseModel, TimestampsMixin):
 	)
 	delivery_instructions = models.CharField(
 		_('Delivery Instructions'), 
-		max_length=255
+		max_length=255,
+		null=True,
+		blank=True,
 	)
-	default = models.BooleanField(
+	is_default = models.BooleanField(
 		default=False
 	)
 	account = models.ForeignKey(
 		Account, 
 		verbose_name=_('Account'), 
-		on_delete=models.CASCADE
+		on_delete=models.CASCADE,
+		related_name='addresses',
 	)
 
 	class Meta:

@@ -10,26 +10,33 @@ from ecomm.apps.account.models import (
 class AddressAdmin(AdminBaseModel):
 	model = Address
 	list_display = (
-		'line',
+		'address_line',
+		'address_line_2',
 		'town_city',
+		'state',
+		'country',
 		'phone',
 		'postcode',
-		'default',
+		'is_default',
 		'is_valid',
 		'account',
 	)
 	list_filter = (
 		'is_valid', 
+		'is_default',
 	)
 	fieldsets = (
 		(None, {
 			'fields': (
-				'line',
+				'address_line',
+				'address_line_2',
 				'town_city',
+				'state',
+				'country',
 				'phone',
 				'postcode',
 				'delivery_instructions',
-				'default',
+				'is_default',
 				'is_valid',
 				'account',
 			)

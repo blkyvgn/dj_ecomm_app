@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'ecomm.apps.compare.apps.CompareConfig',
     'ecomm.apps.wish.apps.WishConfig',
     'ecomm.apps.stock.apps.StockConfig',
+    'ecomm.apps.checkout.apps.CheckoutConfig',
     # extensions
     'mptt',
     'debug_toolbar',
@@ -158,7 +159,7 @@ MEDIA_ROOT = BASE_DIR / 'media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-REDIRECT_TO_IF_AUTHENTICATED = 'company:dashboard'
+REDIRECT_TO_IF_AUTHENTICATED = 'company:account_dashboard'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
